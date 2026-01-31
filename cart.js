@@ -17,7 +17,8 @@ function displayCart() {
   let total = 0;
 
   cart.forEach((item, index) => {
-    let itemTotal = Number(item.Price) * item.qty;
+    let qty = item.qty || 1;
+    let itemTotal = Number(item.Price) * qty;
     total += itemTotal;
 
     cartDiv.innerHTML += `
@@ -32,14 +33,14 @@ function displayCart() {
         <!-- Info -->
         <div class="cart-info">
           <h3>${item.Name}</h3>
-          <p>₹${item.Price} × ${item.qty}</p>
+          <p>₹${item.Price} × ${qty}</p>
           <p><b>Subtotal:</b> ₹${itemTotal}</p>
         </div>
 
         <!-- Quantity Controls -->
         <div class="qty-controls">
           <button onclick="decreaseQty(${index})">−</button>
-          <span>${item.qty}</span>
+          <span>${qty}</span>
           <button onclick="increaseQty(${index})">+</button>
         </div>
 
