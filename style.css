@@ -5,14 +5,25 @@ body {
 }
 
 h1 {
-  color: darkblue;
+  color: #EDC789;
+  font-size: 32px;
+  font-weight: bold;
 }
 
+/* 🔍 Search Bar Theme */
 #search {
   width: 60%;
-  padding: 10px;
-  margin: 20px;
+  padding: 12px;
   font-size: 16px;
+  border-radius: 12px;
+  border: 2px solid #EDC789;
+  outline: none;
+}
+
+/* Focus Effect */
+#search:focus {
+  border-color: black;
+  box-shadow: 0px 0px 8px rgba(237, 199, 137, 0.8);
 }
 
 #product-list {
@@ -22,9 +33,9 @@ h1 {
 }
 
 .product {
-  border: 1px solid #ddd;
+  border: 2px solid #EDC789;
+  border-radius: 15px;
   padding: 15px;
-  border-radius: 10px;
 }
 
 .product img {
@@ -102,7 +113,8 @@ button:hover {
   top: 0;
   left: 0;
   width: 100%;
-  background: white;
+  background: black;
+  color: #EDC789;
   padding: 15px 20px;
   border-bottom: 2px solid #ddd;
   z-index: 1000;
@@ -111,18 +123,26 @@ button:hover {
   align-items: center;
 }
 
+.header h1 {
+  color: #EDC789;
+}
+
 /* Cart Button Top Right */
 .cart-link {
   text-decoration: none;
   font-size: 18px;
+  background: #EDC789;
+  color: black;
   font-weight: bold;
-  background: black;
-  color: white;
   padding: 8px 15px;
   border-radius: 8px;
 
   /* ✅ Move button slightly left */
   margin-right: 200px;
+}
+
+.cart-link:hover {
+  background: #d8ae6d;
 }
 
 /* Fixed Search Bar */
@@ -189,8 +209,14 @@ button:hover {
 
 /* Highlight Checkout Button */
 .checkout-btn {
+  background: black;
+  color: #EDC789;
   font-weight: bold;
   font-size: 16px;
+}
+
+.checkout-btn:hover {
+  background: #222;
 }
 
 /* Checkout Layout */
