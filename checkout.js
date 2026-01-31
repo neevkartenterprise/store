@@ -108,9 +108,6 @@ async function submitOrder() {
   }
 }
 
-// Display Order Number
-document.getElementById("order-id").innerText = orderID;
-
 // Convert file to Base64
 function toBase64(file) {
   return new Promise((resolve, reject) => {
@@ -120,13 +117,3 @@ function toBase64(file) {
     reader.readAsDataURL(file);
   });
 }
-
-let orderData = {
-  orderID: orderID,
-  name: name,
-  phone: phone,
-  utr: utr,
-  total: totalAmount,
-  items: JSON.stringify(cart),
-  screenshot: screenshotData
-};
