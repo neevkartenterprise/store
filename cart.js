@@ -100,3 +100,13 @@ function saveCart() {
 }
 
 displayCart();
+
+// Reset Entire Cart
+function resetCart() {
+  if (confirm("Are you sure you want to empty the cart?")) {
+    cart = [];
+    localStorage.removeItem("cart");
+    displayCart();
+  }
+}
+
