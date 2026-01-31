@@ -24,7 +24,10 @@ function displayProducts(items) {
 
     list.innerHTML += `
       <div class="product">
-        <img src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w500">
+        <img 
+          src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w500"
+          onerror="this.src='https://via.placeholder.com/200'"
+        >
         <h3>${p.Name}</h3>
         <p>₹${p.Price}</p>
         <button onclick="addToCart('${p.ID}')">Add to Cart</button>
