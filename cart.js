@@ -62,7 +62,9 @@ function displayCart() {
         </div>
 
         <!-- Remove -->
-        <button onclick="removeItem(${index})">Remove</button>
+        <button class="remove-btn" onclick="removeItem(${index})">
+          🗑 Remove
+        </button>
 
       </div>
     `;
