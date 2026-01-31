@@ -32,6 +32,11 @@ const upiName = "Neev Kart Enterprise";
 
 const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
 
+// ✅ Direct App Payment Links
+document.getElementById("gpay-link").href = upiLink;
+document.getElementById("phonepe-link").href = upiLink;
+document.getElementById("paytm-link").href = upiLink;
+
 const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 
 document.getElementById("qr-image").src = qrUrl;
