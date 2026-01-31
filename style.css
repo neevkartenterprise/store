@@ -311,3 +311,56 @@ button:hover {
 .upi-btn:hover {
   background: #d8ae6d;
 }
+
+/* Payment Instructions Card */
+.pay-instructions {
+  background: #fff7e6;
+  border: 1px solid #EDC789;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+/* Copy Button */
+.copy-btn {
+  background: #E27F34;
+  color: white;
+  margin-top: 10px;
+}
+
+.copy-btn:hover {
+  background: #c76620;
+}
+
+/* UPI App Buttons */
+.upi-app-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+/* App Button Base */
+.upi-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* App Colors */
+.gpay {
+  background: #34a853;
+}
+
+.phonepe {
+  background: #5f259f;
+}
+
+.paytm {
+  background: #002970;
+}
