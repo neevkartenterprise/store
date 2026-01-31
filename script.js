@@ -15,7 +15,12 @@ function displayProducts(items) {
   list.innerHTML = "";
 
   items.forEach(p => {
-    if (p.Active !== "TRUE") return;
+
+    const isActive =
+      p.Active === true ||
+      String(p.Active).trim().toUpperCase() === "TRUE";
+
+    if (!isActive) return;
 
     list.innerHTML += `
       <div class="product">
@@ -27,6 +32,7 @@ function displayProducts(items) {
     `;
   });
 }
+
 
 // Add to Cart
 function addToCart(id) {
