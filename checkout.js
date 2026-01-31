@@ -40,9 +40,7 @@ const upiName = "Neev Kart Enterprise";
 const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
 
 // ✅ Attach App Buttons
-document.getElementById("gpay-link").href = upiLink;
-document.getElementById("phonepe-link").href = upiLink;
-document.getElementById("paytm-link").href = upiLink;
+document.getElementById("upi-pay-link").href = upiLink;
 
 const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 
@@ -50,39 +48,40 @@ document.getElementById("qr-image").src = qrUrl;
 
 // Submit Order
 async function submitOrder() {
-  const name = document.getElementById("cust-name").value;
-  const phone = document.getElementById("cust-phone").value;
-  const utr = document.getElementById("utr").value;
+  const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();
 
-  let utr = document.getElementById("utr").value.trim();
-  let file = document.getElementById("payment-proof").files[0];
-  
-  // ✅ Require at least one proof
-  if (!utr && !file) {
+  const utrValue = document.getElementById("utr").value.trim();
+  const file = document.getElementById("payment-proof").files[0];
+
+  // Require at least one proof
+  if (!utrValue && !file) {
     document.getElementById("status").innerText =
-      "❌ Please enter Transaction ID OR upload payment screenshot.";
-    return;
-  }
-  
-  if (!name || !phone || !utr) {
-    alert("Please fill all fields!");
+      "❌ Please enter Transaction ID OR upload screenshot.";
     return;
   }
 
-  const orderData = {
-    name: name,
-    phone: phone,
-    utr: utr,
-    total: totalAmount,
-    items: JSON.stringify(cart)
-  };
-
-  document.getElementById("status").innerText = "Submitting order...";
+  if (!name || !phone) {
+    alert("Please fill Name and Phone!");
+    return;
+  }
 
   let screenshotData = "";
   if (file) {
     screenshotData = await toBase64(file);
   }
+
+  const orderData = {
+    orderID: orderID,
+    name: name,
+    phone: phone,
+    utr: utrValue,
+    total: totalAmount,
+    items: JSON.stringify(cart),
+    screenshot: screenshotData
+  };
+
+  document.getElementById("status").innerText = "Submitting order...";
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -92,26 +91,20 @@ async function submitOrder() {
   const result = await response.text();
 
   if (result === "Success") {
-  
-    // ✅ 1. Show success message
-    //document.getElementById("status").innerText =
-    //  "✅ Order Submitted Successfully! Redirecting to Home...";
     document.getElementById("status").innerHTML =
-    "🎉 Order Submitted Successfully! <br>Redirecting...";
-  
-    // ✅ 2. Clear cart so order is not repeated
+      "🎉 Order Submitted Successfully! Redirecting...";
+
     localStorage.removeItem("cart");
-  
-    // ✅ 3. Disable submit button to prevent double orders
+
     document.getElementById("submit-btn").disabled = true;
     document.getElementById("submit-btn").innerText = "Order Placed ✅";
-  
-    // ✅ 4. Redirect after 3 seconds
+
     setTimeout(() => {
       window.location.href = "index.html";
     }, 3000);
   } else {
-    document.getElementById("status").innerText = "❌ Error submitting order. Please try again.";
+    document.getElementById("status").innerText =
+      "❌ Error submitting order. Please try again.";
   }
 }
 
