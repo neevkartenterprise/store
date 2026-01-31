@@ -33,10 +33,22 @@ h1 {
   object-fit: cover;
 }
 
+/* 🌟 Global Button Theme */
 button {
-  padding: 10px;
-  margin-top: 10px;
+  background: #EDC789;
+  color: black;
+  border: none;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: bold;
   cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+/* Hover Effect */
+button:hover {
+  background: #d8ae6d; /* slightly darker shade */
 }
 
 /* Cart Item Layout */
