@@ -1,5 +1,13 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// ✅ Fix old cart items missing qty
+cart = cart.map(item => {
+  if (!item.qty) item.qty = 1;
+  return item;
+});
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
 function displayCart() {
   const cartDiv = document.getElementById("cart-items");
   const totalSpan = document.getElementById("total");
