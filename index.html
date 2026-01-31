@@ -7,25 +7,28 @@
 </head>
 <body>
 
-  <h1>🛒 Neev Kart Enterprise Cloud Store</h1>
+  <!-- Fixed Header -->
+  <div class="header">
+    <h1>Neev Kart Enterprise Cloud Store</h1>
 
-  <!-- Search Box -->
-  <input type="text" id="search" placeholder="Search products...">
+    <!-- Cart Button Top Right -->
+    <a href="cart.html" class="cart-link">
+      🛍 Cart (<span id="cart-count">0</span>)
+    </a>
+  </div>
+
+  <!-- Fixed Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Search products...">
+  </div>
 
   <!-- Product List -->
   <div id="product-list"></div>
-
-  <!-- Cart Button -->
-  <a href="cart.html">
-  <button id="cart-btn">
-    🛍 Cart (<span id="cart-count">0</span>)
-  </button>
-  </a>
-
 
   <script src="script.js"></script>
 
 </body>
 </html>
+
 
 
