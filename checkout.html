@@ -19,8 +19,16 @@
 
     <h3>Total Amount: ₹<span id="final-total"></span></h3>
   </div>
-
+ 
   <!-- RIGHT: Payment -->
+  <div class="pay-instructions">
+  <h3>📝 Payment Steps</h3>
+  <p>1. Pay the exact amount using QR or UPI Apps.</p>
+  <p>2. After payment, enter your UTR number below.</p>
+  <p>3. Click Submit Order to confirm.</p>
+  </div>
+
+  
   <div class="checkout-box">
     <h2>📲 Pay Using UPI QR</h2>
 
@@ -28,21 +36,27 @@
 
     <img id="qr-image" width="220">
 
+    <button onclick="copyUPI()" class="copy-btn">
+      📋 Copy UPI ID
+    </button>
+    <p id="copy-status"></p>
+
     <h3>📲 Pay Directly Using Apps</h3>
     
     <div class="upi-app-buttons">
       <a id="gpay-link" target="_blank">
-        <button class="upi-btn">🟢 Google Pay</button>
+        <button class="upi-btn gpay">Google Pay</button>
       </a>
     
       <a id="phonepe-link" target="_blank">
-        <button class="upi-btn">🟣 PhonePe</button>
+        <button class="upi-btn phonepe">PhonePe</button>
       </a>
     
       <a id="paytm-link" target="_blank">
-        <button class="upi-btn">🔵 Paytm</button>
+        <button class="upi-btn paytm">Paytm</button>
       </a>
     </div>
+
     
     <h3>Enter Payment Details</h3>
 
