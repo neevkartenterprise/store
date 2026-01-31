@@ -36,14 +36,40 @@ function displayProducts(items) {
   });
 }
 
+function decreaseFromCart(id) {
+  let item = cart.find(p => p.ID === id);
+
+  if (!item) return;
+
+  if (item.qty > 1) {
+    item.qty -= 1;
+  } else {
+    // Remove item if qty becomes 0
+    cart = cart.filter(p => p.ID !== id);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  updateCartCount();
+  displayProducts(products);
+}
+
 function getCartButton(id) {
   let item = cart.find(p => p.ID === id);
 
-  if (item) {
-    return `<button disabled>✔ Added (${item.qty})</button>`;
-  } else {
+  // If not in cart → show Add button
+  if (!item) {
     return `<button onclick="addToCart('${id}')">Add to Cart</button>`;
   }
+
+  // If already in cart → show quantity controls
+  return `
+    <div class="product-qty">
+      <button onclick="decreaseFromCart('${id}')">−</button>
+      <span>${item.qty}</span>
+      <button onclick="addToCart('${id}')">+</button>
+    </div>
+  `;
 }
 
 // Add to Cart
