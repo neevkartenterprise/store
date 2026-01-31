@@ -82,6 +82,6 @@ async function submitOrder() {
       window.location.href = "index.html";
     }, 3000);
   } else {
-    document.getElementById("status").innerText = "❌ Error submitting order.";
+    document.getElementById("status").innerText = "❌ Error submitting order. Please try again.";
   }
 }
