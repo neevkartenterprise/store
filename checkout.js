@@ -65,8 +65,22 @@ async function submitOrder() {
   const result = await response.text();
 
   if (result === "Success") {
-    document.getElementById("status").innerText = "✅ Order Submitted Successfully!";
+  
+    // ✅ 1. Show success message
+    document.getElementById("status").innerText =
+      "✅ Order Submitted Successfully! Redirecting to Home...";
+  
+    // ✅ 2. Clear cart so order is not repeated
     localStorage.removeItem("cart");
+  
+    // ✅ 3. Disable submit button to prevent double orders
+    document.getElementById("submit-btn").disabled = true;
+    document.getElementById("submit-btn").innerText = "Order Placed ✅";
+  
+    // ✅ 4. Redirect after 3 seconds
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
   } else {
     document.getElementById("status").innerText = "❌ Error submitting order.";
   }
