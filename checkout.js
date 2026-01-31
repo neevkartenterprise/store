@@ -104,3 +104,6 @@ function detectMobile() {
 }
 
 detectMobile();
+
+// Display Order Number
+document.getElementById("order-id").innerText = orderID;
