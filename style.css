@@ -108,6 +108,9 @@ button {
   color: white;
   padding: 8px 15px;
   border-radius: 8px;
+
+  /* ✅ Move button slightly left */
+  margin-right: 20px;
 }
 
 /* Fixed Search Bar */
