@@ -180,3 +180,40 @@ button {
   font-weight: bold;
   font-size: 16px;
 }
+
+/* Checkout Layout */
+.checkout-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* Checkout Card Box */
+.checkout-box {
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 20px;
+  width: 350px;
+  background: #fff;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Checkout Inputs */
+.checkout-box input {
+  width: 90%;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Submit Button */
+#submit-btn {
+  width: 95%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+}
