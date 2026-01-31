@@ -1,11 +1,28 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// ✅ Fix old cart items missing qty
+// ✅ Step 1: Fix missing qty
 cart = cart.map(item => {
   if (!item.qty) item.qty = 1;
   return item;
 });
 
+// ✅ Step 2: Merge duplicate products by ID
+let mergedCart = [];
+
+cart.forEach(item => {
+  let existing = mergedCart.find(p => p.ID === item.ID);
+
+  if (existing) {
+    existing.qty += item.qty; // Add quantities together
+  } else {
+    mergedCart.push(item);
+  }
+});
+
+// Replace cart with merged version
+cart = mergedCart;
+
+// Save cleaned cart
 localStorage.setItem("cart", JSON.stringify(cart));
 
 function displayCart() {
