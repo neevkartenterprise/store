@@ -50,3 +50,31 @@
     </div>
 </div>
 
+
+// Replace with your actual deployment URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2e6YIvqBjPqPCHQ3zkr7gVlj9VsT3O19EeJs-gUlzSAna/exec"; 
+let allProducts = []; // Global state to hold data for searching/filtering
+
+async function loadProducts() {
+    try {
+        // 1. Start the network request
+        const response = await fetch(API_URL);
+
+        // 2. Check if the request was successful
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        // 3. Parse the JSON data from Google Apps Script
+        allProducts = await response.json();
+
+        // 4. Pass the data to your display function (created in Step 6)
+        displayProducts(allProducts);
+        
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        document.getElementById('productGrid').innerHTML = 
+            `<p class='text-red-500'>Error loading products. Please refresh.</p>`;
+    }
+}
+
+// Initialize the fetch when the page loads
+window.onload = loadProducts;
