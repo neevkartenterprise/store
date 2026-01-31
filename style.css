@@ -391,3 +391,35 @@ button:hover {
   object-fit: contain;
 }
 
+/* Order Summary Invoice Style */
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 15px;
+}
+
+.summary-name {
+  width: 65%;
+  text-align: left;
+  font-weight: 500;
+}
+
+.summary-price {
+  width: 35%;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Divider */
+.summary-divider {
+  margin: 12px 0;
+  border: 1px solid #ccc;
+}
+
+/* Total */
+.summary-total {
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+}
