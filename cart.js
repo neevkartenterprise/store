@@ -12,12 +12,27 @@ function displayCart() {
     total += Number(item.Price);
 
     cartDiv.innerHTML += `
-      <div class="product">
-        <h3>${item.Name}</h3>
-        <p>₹${item.Price}</p>
+      <div class="cart-item">
+        
+        <!-- Thumbnail Image -->
+        <img 
+          src="https://drive.google.com/thumbnail?id=${item.Image_ID}&sz=w100"
+          class="cart-thumb"
+          alt="${item.Name}"
+        >
+    
+        <!-- Product Info -->
+        <div class="cart-info">
+          <h3>${item.Name}</h3>
+          <p>₹${item.Price}</p>
+        </div>
+    
+        <!-- Remove Button -->
         <button onclick="removeItem(${index})">Remove</button>
+    
       </div>
     `;
+
   });
 
   totalSpan.innerText = total;
