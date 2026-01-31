@@ -1,3 +1,6 @@
+// ✅ Generate Order Number
+const orderID = "ORD" + Date.now();
+
 const API_URL = "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2e6YIvqBjPqPCHQ3zkr7gVlj9VsT3O19EeJs-gUlzSAna/exec";
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
