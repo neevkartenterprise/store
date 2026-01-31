@@ -298,13 +298,19 @@ button:hover {
 }
 
 /* App Pay Buttons */
-.upi-btn {
+.upi-combo-btn {
+  width: 100%;
   background: #EDC789;
   border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
   font-weight: bold;
+  border-radius: 12px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
 }
 
 .upi-btn:hover {
