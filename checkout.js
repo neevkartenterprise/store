@@ -115,15 +115,6 @@ async function submitOrder() {
   }
 }
 
-// ✅ Detect Mobile Users
-function detectMobile() {
-  if (window.innerWidth < 768) {
-    document.getElementById("qr-image").style.display = "none";
-  }
-}
-
-detectMobile();
-
 // Display Order Number
 document.getElementById("order-id").innerText = orderID;
 
