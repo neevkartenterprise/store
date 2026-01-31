@@ -24,7 +24,7 @@ function displayProducts(items) {
 
     list.innerHTML += `
       <div class="product">
-        <img src="https://drive.google.com/uc?export=view&id=${p.Image_ID}">
+        <img src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w500">
         <h3>${p.Name}</h3>
         <p>₹${p.Price}</p>
         <button onclick="addToCart('${p.ID}')">Add to Cart</button>
