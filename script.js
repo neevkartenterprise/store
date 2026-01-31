@@ -30,12 +30,21 @@ function displayProducts(items) {
         >
         <h3>${p.Name}</h3>
         <p>₹${p.Price}</p>
-        <button onclick="addToCart('${p.ID}')">Add to Cart</button>
+        ${getCartButton(p.ID)}
       </div>
     `;
   });
 }
 
+function getCartButton(id) {
+  let item = cart.find(p => p.ID === id);
+
+  if (item) {
+    return `<button disabled>✔ Added (${item.qty})</button>`;
+  } else {
+    return `<button onclick="addToCart('${id}')">Add to Cart</button>`;
+  }
+}
 
 // Add to Cart
 function addToCart(id) {
@@ -53,6 +62,9 @@ function addToCart(id) {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
+
+  // ✅ Refresh Product UI
+  displayProducts(products);
 }
 
 // Update Cart Count
