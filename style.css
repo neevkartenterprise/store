@@ -322,17 +322,6 @@ button:hover {
   text-align: left;
 }
 
-/* Copy Button */
-.copy-btn {
-  background: #E27F34;
-  color: white;
-  margin-top: 10px;
-}
-
-.copy-btn:hover {
-  background: #c76620;
-}
-
 /* UPI App Buttons */
 .upi-app-buttons {
   display: flex;
