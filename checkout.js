@@ -9,6 +9,23 @@ let totalAmount = cart.reduce(
 );
 document.getElementById("final-total").innerText = totalAmount;
 
+// Show Order Summary
+function showSummary() {
+  const summaryDiv = document.getElementById("order-summary");
+  summaryDiv.innerHTML = "";
+
+  cart.forEach(item => {
+    summaryDiv.innerHTML += `
+      <p>
+        ${item.Name} 
+        ₹${item.Price} × ${item.qty}
+      </p>
+    `;
+  });
+}
+
+showSummary();
+
 // Generate UPI QR Code
 const upiID = "amitjadav-1@okaxis";   // <-- Change this if bank account need to update
 const upiName = "Neev Kart Enterprise";
