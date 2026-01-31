@@ -59,7 +59,21 @@
 
     <input id="cust-name" placeholder="Your Name"><br><br>
     <input id="cust-phone" placeholder="Phone Number"><br><br>
-    <input id="utr" placeholder="Enter UTR Number"><br><br>
+
+    <h3>📌 Payment Proof</h3>
+    
+    <!-- Option 1: UTR Input -->
+    <input id="utr" placeholder="Enter UPI Transaction ID / UTR"><br><br>
+    
+    <p><b>OR</b></p>
+    
+    <!-- Option 2: Screenshot Upload -->
+    <input type="file" id="payment-proof" accept="image/*"><br><br>
+    
+    <small>
+      You can either enter UTR or upload screenshot proof.
+    </small>
+
 
     <button id="submit-btn" onclick="submitOrder()">
       ✅ Submit Order
