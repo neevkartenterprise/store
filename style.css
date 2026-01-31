@@ -362,3 +362,25 @@ button:hover {
   padding: 10px;
   border-radius: 12px;
 }
+
+.upi-combo-btn {
+  width: 100%;
+  background: #EDC789;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.upi-combo-btn img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
