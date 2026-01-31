@@ -352,3 +352,13 @@ button:hover {
 .paytm {
   background: #002970;
 }
+
+#qr-image {
+  display: block;
+  margin: 15px auto;
+  width: 220px;
+  height: 220px;
+  border: 2px solid #ddd;
+  padding: 10px;
+  border-radius: 12px;
+}
