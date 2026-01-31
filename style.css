@@ -107,39 +107,44 @@ button:hover {
   font-weight: bold;
 }
 
-/* Fixed Header */
+/* ✅ Compact Fixed Header */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background: black;
-  color: #EDC789;
-  padding: 15px 20px;
-  border-bottom: 2px solid #ddd;
+  padding: 8px 15px;   /* 🔥 Reduced height */
   z-index: 1000;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+
 .header h1 {
+  font-size: 20px;   /* smaller */
+  margin: 0;
   color: #EDC789;
 }
+
 
 /* Cart Button Top Right */
 .cart-link {
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
+
   background: #EDC789;
   color: black;
-  font-weight: bold;
-  padding: 8px 15px;
+
+  padding: 6px 12px;
   border-radius: 8px;
 
-  /* ✅ Move button slightly left */
-  margin-right: 200px;
+  margin-right: 30px; /* ✅ small spacing only */
 }
+
 
 .cart-link:hover {
   background: #d8ae6d;
@@ -148,14 +153,15 @@ button:hover {
 /* Fixed Search Bar */
 .search-bar {
   position: fixed;
-  top: 80px;
+  top: 55px;   /* ✅ closer below header */
   left: 0;
   width: 100%;
   background: white;
-  padding: 10px;
+  padding: 8px;
   z-index: 999;
   border-bottom: 1px solid #ddd;
 }
+
 
 #search {
   width: 60%;
@@ -165,7 +171,7 @@ button:hover {
 
 /* Push Product List Down */
 #product-list {
-  margin-top: 160px;
+  margin-top: 120px; /* ✅ correct spacing */
 }
 
 /* Quantity Controls on Product Cards */
