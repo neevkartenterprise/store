@@ -288,3 +288,26 @@ button:hover {
 .remove-btn:hover {
   background: #c76620; /* darker orange */
 }
+
+/* UPI App Buttons */
+.upi-app-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* App Pay Buttons */
+.upi-btn {
+  background: #EDC789;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.upi-btn:hover {
+  background: #d8ae6d;
+}
