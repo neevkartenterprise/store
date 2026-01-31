@@ -50,6 +50,16 @@ async function submitOrder() {
   const phone = document.getElementById("cust-phone").value;
   const utr = document.getElementById("utr").value;
 
+  let utr = document.getElementById("utr").value.trim();
+  let file = document.getElementById("payment-proof").files[0];
+  
+  // ✅ Require at least one proof
+  if (!utr && !file) {
+    document.getElementById("status").innerText =
+      "❌ Please enter Transaction ID OR upload payment screenshot.";
+    return;
+  }
+  
   if (!name || !phone || !utr) {
     alert("Please fill all fields!");
     return;
@@ -64,6 +74,11 @@ async function submitOrder() {
   };
 
   document.getElementById("status").innerText = "Submitting order...";
+
+  let screenshotData = "";
+  if (file) {
+    screenshotData = await toBase64(file);
+  }
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -107,3 +122,23 @@ detectMobile();
 
 // Display Order Number
 document.getElementById("order-id").innerText = orderID;
+
+// Convert file to Base64
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+let orderData = {
+  orderID: orderID,
+  name: name,
+  phone: phone,
+  utr: utr,
+  total: totalAmount,
+  items: JSON.stringify(cart),
+  screenshot: screenshotData
+};
