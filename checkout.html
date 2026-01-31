@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>💳 Checkout</h1>
+
+<h2>Total Amount: ₹<span id="final-total"></span></h2>
+
+<h3>Scan & Pay Using UPI</h3>
+<img id="qr-image" width="200">
+
+<h3>Enter Payment Details</h3>
+
+<input id="cust-name" placeholder="Your Name"><br><br>
+<input id="cust-phone" placeholder="Phone Number"><br><br>
+<input id="utr" placeholder="Enter UTR Number"><br><br>
+
+<button onclick="submitOrder()">Submit Order</button>
+
+<p id="status"></p>
+
+<script src="checkout.js"></script>
+
+</body>
+</html>
