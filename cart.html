@@ -26,9 +26,30 @@
 
 <h2>Total: ₹<span id="total">0</span></h2>
 
-<a href="checkout.html">
-  <button>Proceed to Checkout</button>
-</a>
+<h1>🛍 Your Cart</h1>
+
+<!-- Action Buttons Row -->
+<div class="cart-buttons">
+
+  <!-- Home Button -->
+  <a href="index.html">
+    <button>🏠 Home</button>
+  </a>
+
+  <!-- Reset Cart Button -->
+  <button onclick="resetCart()">🗑 Reset Cart</button>
+
+  <!-- Checkout Button -->
+  <a href="checkout.html">
+    <button class="checkout-btn">✅ Proceed to Checkout</button>
+  </a>
+
+</div>
+
+<div id="cart-items"></div>
+
+<h2>Total: ₹<span id="total">0</span></h2>
+
 
 <script src="cart.js"></script>
 
