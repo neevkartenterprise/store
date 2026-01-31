@@ -102,12 +102,3 @@ function detectMobile() {
 
 detectMobile();
 
-// ✅ Copy UPI ID Button Logic
-function copyUPI() {
-  const upiID = "YOUR_UPI_ID@okaxis";
-
-  navigator.clipboard.writeText(upiID).then(() => {
-    document.getElementById("copy-status").innerText =
-      "✅ UPI ID Copied Successfully!";
-  });
-}
