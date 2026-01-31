@@ -68,8 +68,10 @@ function addToCart(id) {
 }
 
 // Update Cart Count
-const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-document.getElementById("cart-count").innerText = totalItems;
+function updateCartCount() {
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+  document.getElementById("cart-count").innerText = totalItems;
+}
 
 // Search Feature
 document.getElementById("search").addEventListener("input", e => {
