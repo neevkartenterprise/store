@@ -18,11 +18,15 @@ function showSummary() {
   summaryDiv.innerHTML = "";
 
   cart.forEach(item => {
+    let itemTotal = Number(item.Price) * item.qty;
+
     summaryDiv.innerHTML += `
-      <p>
-        ${item.Name} 
-        ₹${item.Price} × ${item.qty}
-      </p>
+      <div class="summary-item">
+        <p><b>${item.Name}</b></p>
+        <p>₹${item.Price} × ${item.qty}</p>
+        <p><b>Subtotal:</b> ₹${itemTotal}</p>
+        <hr>
+      </div>
     `;
   });
 }
