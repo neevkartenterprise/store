@@ -23,40 +23,49 @@
 
     <!-- Payment Steps -->
     <h3>📝 Payment Steps</h3>
-    <p>1. Pay the exact amount using QR OR UPI Apps.</p>
-    <p>2. After payment, enter Transaction ID OR upload screenshot.</p>
+    <p>1. Pay the exact amount using QR Code OR UPI Payment Apps.</p>
+    <p>2. After payment, enter your UPI Transaction ID / Ref. No. / UTR or attach screenshot below.</p>
     <p>3. Click Submit Order to confirm.</p>
 
     <hr>
 
     <!-- Payment Section -->
     <h2>📲 Pay Using UPI QR</h2>
-    <p>Scan this QR and pay the exact amount.</p>
+
+    <p>Scan the QR code below and pay the exact amount.</p>
 
     <img id="qr-image" width="220">
 
-    <h3>📲 Pay Using Payment Apps</h3>
+    <h3>📲 Pay Directly Using UPI Payment Apps</h3>
 
     <!-- Single Pay Button -->
     <a id="upi-pay-link" target="_blank">
       <button class="upi-combo-btn">
-        Pay Using GPay/PhonePe/Paytm
+        Pay Using GPay / PhonePe / Paytm
       </button>
     </a>
 
     <hr>
 
-    <!-- Payment Proof -->
-    <h3>📌 Payment Proof</h3>
+    <!-- ✅ Keep this section EXACTLY -->
+    <h3>Enter Payment Details</h3>
 
     <input id="cust-name" placeholder="Your Name"><br><br>
     <input id="cust-phone" placeholder="Phone Number"><br><br>
 
+    <h3>Payment Proof</h3>
+    <small>
+      You can either enter UPI Transaction ID or upload screenshot to confirm the payment.
+    </small>
+    <!-- Option 1 -->
     <input id="utr" placeholder="Enter UPI Transaction ID / UTR"><br><br>
 
     <p><b>OR</b></p>
 
+    <!-- Option 2 -->
     <input type="file" id="payment-proof" accept="image/*"><br><br>
+
+    <br><br>
 
     <button id="submit-btn" onclick="submitOrder()">
       ✅ Submit Order
