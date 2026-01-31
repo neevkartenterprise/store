@@ -3,7 +3,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // Calculate Total
-let totalAmount = cart.reduce((sum, item) => sum + Number(item.Price), 0);
+let totalAmount = cart.reduce(
+  (sum, item) => sum + Number(item.Price) * item.qty,
+  0
+);
 document.getElementById("final-total").innerText = totalAmount;
 
 // Generate UPI QR Code
