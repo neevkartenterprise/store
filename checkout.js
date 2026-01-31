@@ -32,7 +32,7 @@ const upiName = "Neev Kart Enterprise";
 
 const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
 
-// ✅ Direct App Payment Links
+// ✅ Attach App Buttons
 document.getElementById("gpay-link").href = upiLink;
 document.getElementById("phonepe-link").href = upiLink;
 document.getElementById("paytm-link").href = upiLink;
@@ -72,8 +72,10 @@ async function submitOrder() {
   if (result === "Success") {
   
     // ✅ 1. Show success message
-    document.getElementById("status").innerText =
-      "✅ Order Submitted Successfully! Redirecting to Home...";
+    //document.getElementById("status").innerText =
+    //  "✅ Order Submitted Successfully! Redirecting to Home...";
+    document.getElementById("status").innerHTML =
+    "🎉 Order Submitted Successfully! <br>Redirecting...";
   
     // ✅ 2. Clear cart so order is not repeated
     localStorage.removeItem("cart");
@@ -89,4 +91,23 @@ async function submitOrder() {
   } else {
     document.getElementById("status").innerText = "❌ Error submitting order. Please try again.";
   }
+}
+
+// ✅ Detect Mobile Users
+function detectMobile() {
+  if (window.innerWidth < 768) {
+    document.getElementById("qr-image").style.display = "none";
+  }
+}
+
+detectMobile();
+
+// ✅ Copy UPI ID Button Logic
+function copyUPI() {
+  const upiID = "YOUR_UPI_ID@okaxis";
+
+  navigator.clipboard.writeText(upiID).then(() => {
+    document.getElementById("copy-status").innerText =
+      "✅ UPI ID Copied Successfully!";
+  });
 }
