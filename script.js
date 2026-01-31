@@ -40,7 +40,16 @@ function displayProducts(items) {
 // Add to Cart
 function addToCart(id) {
   const product = products.find(p => p.ID === id);
-  cart.push(product);
+
+  // Check if product already in cart
+  let existing = cart.find(item => item.ID === id);
+
+  if (existing) {
+    existing.qty += 1; // Increase quantity
+  } else {
+    product.qty = 1; // Add new item with qty
+    cart.push(product);
+  }
 
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
