@@ -271,3 +271,20 @@ button:hover {
 .cart-item button:last-child {
   margin-left: 15px;
 }
+
+/* 🗑 Remove Button Styling (Cart Items Only) */
+.remove-btn {
+  background: #E27F34;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Hover Effect */
+.remove-btn:hover {
+  background: #c76620; /* darker orange */
+}
