@@ -99,93 +99,50 @@ async function calculateDeliveryCharge() {
   document.getElementById("delivery-status").innerText =
     "Calculating delivery distance...";
 
+  let pin = document.getElementById("pincode").value.trim();
+
+  if (pin.length !== 6) {
+    alert("❌ Please enter a valid 6-digit PIN Code.");
+    return;
+  }
+
   let address =
     document.getElementById("addr1").value + ", " +
     document.getElementById("addr2").value + ", " +
     document.getElementById("area").value + ", " +
     document.getElementById("landmark").value + ", " +
-    document.getElementById("pincode").value + ", " +
-    "Vadodara, Gujarat, India";
-  
-  // ✅ PIN Code Validation
-  let pin = document.getElementById("pincode").value.trim();
-  
-  if (pin.length !== 6) {
-    alert("❌ Please enter a valid 6-digit Vadodara PIN Code.");
-    return;
-  }
-  
-  // ✅ Restrict Delivery Only to Vadodara
-  if (!address.toLowerCase().includes("vadodara")) {
-    alert("❌ Delivery is available only in Vadodara jurisdiction.");
-    return;
-  }
+    pin + ", Vadodara, Gujarat, India";
 
-  // Step 1: Convert Address → Coordinates
-  // ✅ OpenCage API Key (Add Your Key Here)
   const OPENCAGE_KEY = "805a2f41a9824abdab5cc52b125be639";
-  
-  // Step 1: Convert Address → Coordinates (OpenCage)
+
+  // ✅ NO bounds restriction
   let geoURL =
     `https://api.opencagedata.com/geocode/v1/json?q=` +
     encodeURIComponent(address) +
     `&key=${OPENCAGE_KEY}` +
     `&countrycode=in&limit=1&no_annotations=1`;
 
-  
   let geoRes = await fetch(geoURL);
   let geoData = await geoRes.json();
-  
-  // If no results found
+
   if (!geoData.results || geoData.results.length === 0) {
-    alert("❌ Address not found. Please enter a valid Vadodara address.");
+    alert("❌ Address not found.");
     return;
   }
-  
-  // Extract Latitude + Longitude
+
   let destLat = geoData.results[0].geometry.lat;
   let destLon = geoData.results[0].geometry.lng;
-  
-  // ✅ Step 2: Calculate Distance Using Haversine
+
+  // ✅ Debug
+  console.log("Destination:", destLat, destLon);
+
+  // ✅ Correct Haversine distance
   let distanceKM = getDistanceKM(
-    originLat,
-    originLon,
-    destLat,
-    destLon
+    originLat, originLon,
+    destLat, destLon
   );
 
-  let components = geoData.results[0].components;
-  
-  let detectedCity =
-    components.city ||
-    components.town ||
-    components.county;
-  
-  if (!detectedCity || detectedCity.toLowerCase() !== "vadodara") {
-    alert("❌ Delivery is only available inside Vadodara city limits.");
-    return;
-  }
-
-  // ✅ Haversine Formula Distance Calculator (Accurate)
-  function getDistanceKM(lat1, lon1, lat2, lon2) {
-  
-    const R = 6371; // Earth radius in KM
-  
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-  
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  
-    return R * c;
-  }
-
-  // Step 3: Apply Charge Slabs
+  // Step 3: Delivery Slabs
   if (distanceKM <= 3) deliveryCharge = 40;
   else if (distanceKM <= 7) deliveryCharge = 60;
   else if (distanceKM <= 12) deliveryCharge = 90;
@@ -196,11 +153,13 @@ async function calculateDeliveryCharge() {
   }
 
   document.getElementById("delivery-status").innerHTML =
-    `📍 Distance: <b>${distanceKM.toFixed(2)} km</b> | Delivery Charge: <b>₹${deliveryCharge}</b>`;
+    `📍 Distance: <b>${distanceKM.toFixed(2)} km</b><br>
+     🚚 Delivery Charge: <b>₹${deliveryCharge}</b>`;
 
   showSummary();
-  updateUPI(); // ✅ Refresh QR again after delivery calculation
+  updateUPI();
 }
+
 
 // -------------------------------
 // ✅ Submit Order (Existing + Delivery Added)
@@ -284,3 +243,22 @@ function toBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+// ✅ Haversine Formula Distance Calculator (Accurate)
+  function getDistanceKM(lat1, lon1, lat2, lon2) {
+  
+    const R = 6371; // Earth radius in KM
+  
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+  
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    return R * c;
+  }
