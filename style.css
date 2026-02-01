@@ -343,7 +343,7 @@ button:hover {
   background: #002970;
 }*/
 
-#qr-image {
+/*#qr-image {
   display: block;
   margin: 15px auto;
   width: 220px;
@@ -351,6 +351,14 @@ button:hover {
   border: 2px solid #ddd;
   padding: 10px;
   border-radius: 12px;
+}*/
+#qr-image {
+  display: block;
+  margin: 15px auto;
+  border: 2px solid #ddd;
+  padding: 8px;
+  border-radius: 12px;
+  background: white;
 }
 
 /* App Pay Buttons */
