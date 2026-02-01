@@ -101,8 +101,19 @@ async function calculateDeliveryCharge() {
 
   let address =
     document.getElementById("addr1").value + ", " +
-    document.getElementById("area").value +
-    ", Vadodara, Gujarat, India";
+    document.getElementById("addr2").value + ", " +
+    document.getElementById("area").value + ", " +
+    document.getElementById("landmark").value + ", " +
+    document.getElementById("pincode").value + ", " +
+    "Vadodara, Gujarat, India";
+  
+  // ✅ PIN Code Validation
+  let pin = document.getElementById("pincode").value.trim();
+  
+  if (pin.length !== 6) {
+    alert("❌ Please enter a valid 6-digit Vadodara PIN Code.");
+    return;
+  }
   
   // ✅ Restrict Delivery Only to Vadodara
   if (!address.toLowerCase().includes("vadodara")) {
@@ -116,9 +127,12 @@ async function calculateDeliveryCharge() {
   
   // Step 1: Convert Address → Coordinates (OpenCage)
   let geoURL =
-    `https://api.opencagedata.com/geocode/v1/json?q=` +
-    encodeURIComponent(address) +
-    `&key=${OPENCAGE_KEY}&countrycode=in&limit=1`;
+  `https://api.opencagedata.com/geocode/v1/json?q=` +
+  encodeURIComponent(address) +
+  `&key=${OPENCAGE_KEY}` +
+  `&countrycode=in` +
+  `&limit=1` +
+  `&bounds=73.05,22.15,73.35,22.45`; // ✅ Vadodara bounds
   
   let geoRes = await fetch(geoURL);
   let geoData = await geoRes.json();
@@ -133,7 +147,17 @@ async function calculateDeliveryCharge() {
   let destLat = geoData.results[0].geometry.lat;
   let destLon = geoData.results[0].geometry.lng;
 
-
+  let components = geoData.results[0].components;
+  
+  let detectedCity =
+    components.city ||
+    components.town ||
+    components.county;
+  
+  if (!detectedCity || detectedCity.toLowerCase() !== "vadodara") {
+    alert("❌ Delivery is only available inside Vadodara city limits.");
+    return;
+  }
 
   // Step 2: Distance using OSRM
   let routeURL =
