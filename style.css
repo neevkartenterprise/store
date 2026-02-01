@@ -423,3 +423,9 @@ button:hover {
   font-size: 18px;
   font-weight: bold;
 }
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+}
