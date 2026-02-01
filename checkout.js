@@ -103,22 +103,37 @@ async function calculateDeliveryCharge() {
     document.getElementById("addr1").value + ", " +
     document.getElementById("area").value +
     ", Vadodara, Gujarat, India";
-
-  // Step 1: Convert Address → Coordinates
-  let geoURL =
-    `https://nominatim.openstreetmap.org/search?format=json&q=` +
-    encodeURIComponent(address);
-
-  let geoRes = await fetch(geoURL);
-  let geoData = await geoRes.json();
-
-  if (geoData.length === 0) {
-    alert("❌ Address not found. Please enter correct Vadodara address.");
+  
+  // ✅ Restrict Delivery Only to Vadodara
+  if (!address.toLowerCase().includes("vadodara")) {
+    alert("❌ Delivery is available only in Vadodara jurisdiction.");
     return;
   }
 
-  let destLat = geoData[0].lat;
-  let destLon = geoData[0].lon;
+  // Step 1: Convert Address → Coordinates
+  // ✅ OpenCage API Key (Add Your Key Here)
+  const OPENCAGE_KEY = "805a2f41a9824abdab5cc52b125be639";
+  
+  // Step 1: Convert Address → Coordinates (OpenCage)
+  let geoURL =
+    `https://api.opencagedata.com/geocode/v1/json?q=` +
+    encodeURIComponent(address) +
+    `&key=${OPENCAGE_KEY}&countrycode=in&limit=1`;
+  
+  let geoRes = await fetch(geoURL);
+  let geoData = await geoRes.json();
+  
+  // If no results found
+  if (!geoData.results || geoData.results.length === 0) {
+    alert("❌ Address not found. Please enter a valid Vadodara address.");
+    return;
+  }
+  
+  // Extract Latitude + Longitude
+  let destLat = geoData.results[0].geometry.lat;
+  let destLon = geoData.results[0].geometry.lng;
+
+
 
   // Step 2: Distance using OSRM
   let routeURL =
@@ -155,12 +170,6 @@ async function submitOrder() {
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
 
-    // ✅ DELIVERY CHECK (Add Here)
-  if (deliveryCharge === 0) {
-    alert("🚚 Please calculate delivery charges first.");
-    return;
-  }
-  
   const utrValue = document.getElementById("utr").value.trim();
   const file = document.getElementById("payment-proof").files[0];
 
@@ -172,6 +181,12 @@ async function submitOrder() {
 
   if (!name || !phone) {
     alert("Please fill Name and Phone!");
+    return;
+  }
+  
+  // ✅ DELIVERY CHECK (Add Here)
+    if (deliveryCharge === 0) {
+    alert("🚚 Please calculate delivery charges first.");
     return;
   }
 
