@@ -127,12 +127,11 @@ async function calculateDeliveryCharge() {
   
   // Step 1: Convert Address → Coordinates (OpenCage)
   let geoURL =
-  `https://api.opencagedata.com/geocode/v1/json?q=` +
-  encodeURIComponent(address) +
-  `&key=${OPENCAGE_KEY}` +
-  `&countrycode=in` +
-  `&limit=1` +
-  `&bounds=73.05,22.15,73.35,22.45`; // ✅ Vadodara bounds
+    `https://api.opencagedata.com/geocode/v1/json?q=` +
+    encodeURIComponent(address) +
+    `&key=${OPENCAGE_KEY}` +
+    `&countrycode=in&limit=1&no_annotations=1`;
+
   
   let geoRes = await fetch(geoURL);
   let geoData = await geoRes.json();
