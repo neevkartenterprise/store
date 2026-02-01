@@ -111,4 +111,3 @@ function resetCart() {
     displayCart();
   }
 }
-
