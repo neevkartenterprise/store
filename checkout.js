@@ -146,6 +146,14 @@ async function calculateDeliveryCharge() {
   // Extract Latitude + Longitude
   let destLat = geoData.results[0].geometry.lat;
   let destLon = geoData.results[0].geometry.lng;
+  
+  // ✅ Step 2: Calculate Distance Using Haversine
+  let distanceKM = getDistanceKM(
+    originLat,
+    originLon,
+    destLat,
+    destLon
+  );
 
   let components = geoData.results[0].components;
   
@@ -159,15 +167,24 @@ async function calculateDeliveryCharge() {
     return;
   }
 
-  // Step 2: Distance using OSRM
-  let routeURL =
-    `https://router.project-osrm.org/route/v1/driving/` +
-    `${originLon},${originLat};${destLon},${destLat}?overview=false`;
-
-  let routeRes = await fetch(routeURL);
-  let routeData = await routeRes.json();
-
-  let distanceKM = routeData.routes[0].distance / 1000;
+  // ✅ Haversine Formula Distance Calculator (Accurate)
+  function getDistanceKM(lat1, lon1, lat2, lon2) {
+  
+    const R = 6371; // Earth radius in KM
+  
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+  
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    return R * c;
+  }
 
   // Step 3: Apply Charge Slabs
   if (distanceKM <= 3) deliveryCharge = 40;
