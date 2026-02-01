@@ -159,7 +159,11 @@ async function calculateDeliveryCharge() {
   
   let destLat = bestResult.geometry.lat;
   let destLon = bestResult.geometry.lng;
-  
+
+  //originLat, originLon, destLat, destLon
+  let destLat = destLat.lat;
+  let destLon = destLon.lng;
+
   console.log("Selected Location:", bestResult.formatted);
   console.log("Lat:", destLat, "Lon:", destLon);
 
