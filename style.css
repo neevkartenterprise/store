@@ -297,22 +297,6 @@ button:hover {
   flex-wrap: wrap;
 }
 
-/* App Pay Buttons */
-.upi-combo-btn {
-  width: 100%;
-  background: #EDC789;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-}
-
 .upi-btn:hover {
   background: #d8ae6d;
 }
@@ -346,7 +330,7 @@ button:hover {
   color: white;
 }
 
-/* App Colors */
+/* App Colors
 .gpay {
   background: #34a853;
 }
@@ -357,7 +341,7 @@ button:hover {
 
 .paytm {
   background: #002970;
-}
+}*/
 
 #qr-image {
   display: block;
@@ -369,27 +353,29 @@ button:hover {
   border-radius: 12px;
 }
 
+/* App Pay Buttons */
 .upi-combo-btn {
-  width: 100%;
+  width: 95%;
   background: #EDC789;
   border: none;
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
+/*
 .upi-combo-btn img {
   width: 24px;
   height: 24px;
   object-fit: contain;
 }
+*/
 
 /* Order Summary Invoice Style */
 .summary-line {
@@ -429,3 +415,4 @@ button:hover {
     border-radius: 6px;
     text-decoration: none;
 }
+
