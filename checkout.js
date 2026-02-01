@@ -101,9 +101,9 @@ async function calculateDeliveryCharge() {
 
   let pin = document.getElementById("pincode").value.trim();
 
-  if (pin.length !== 6) {
+  /*if (pin.length !== 6) {
     alert("❌ Please enter a valid 6-digit PIN Code.");
-    return;
+    return;*/
   }
 
   let address =
@@ -114,7 +114,8 @@ async function calculateDeliveryCharge() {
     pin + ", Vadodara, Gujarat, India";
 
   if (!document.getElementById("addr1").value.trim() ||
-      !document.getElementById("area").value.trim()) {
+      !document.getElementById("area").value.trim() ||
+      !document.getElementById("pincode").value.trim()) {
   
     alert("❌ Please enter Address Line 1 and Area/Society.");
     return;
