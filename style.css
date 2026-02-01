@@ -343,7 +343,7 @@ button:hover {
   background: #002970;
 }*/
 
-#qr-image {
+/*#qr-image {
   display: block;
   margin: 15px auto;
   width: 220px;
@@ -352,7 +352,7 @@ button:hover {
   padding: 10px;
   border-radius: 12px;
 }
-/*#qr-image {
+#qr-image {
   display: block;
   margin: 15px auto;
   border: 2px solid #ddd;
@@ -360,6 +360,23 @@ button:hover {
   border-radius: 12px;
   background: white;
 }*/
+
+/* ✅ QR Code Fix (Must Add) */
+#qr-image {
+  display: block !important;
+  margin: 20px auto !important;
+
+  width: 220px !important;
+  height: 220px !important;
+
+  border: 2px solid #EDC789;
+  border-radius: 15px;
+
+  padding: 8px;
+  background: white !important;
+
+  object-fit: contain !important;
+}
 
 /* App Pay Buttons */
 .upi-combo-btn {
