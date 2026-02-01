@@ -92,27 +92,6 @@ function updateUPI() {
 updateUPI();
 
 // -------------------------------
-// ✅ Map Link Auto Update (Existing)
-// -------------------------------
-function updateMapLink() {
-  let fullAddress =
-    document.getElementById("addr1").value + ", " +
-    document.getElementById("addr2").value + ", " +
-    document.getElementById("area").value + ", " +
-    document.getElementById("landmark").value + ", Vadodara, Gujarat";
-
-  let mapURL =
-    "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(fullAddress);
-
-  document.getElementById("map-link").href = mapURL;
-}
-
-["addr1", "addr2", "area", "landmark"].forEach(id => {
-  document.getElementById(id).addEventListener("input", updateMapLink);
-});
-
-// -------------------------------
 // ✅ Delivery Charge Calculation (FREE)
 // -------------------------------
 async function calculateDeliveryCharge() {
