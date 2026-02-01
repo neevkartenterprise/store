@@ -183,12 +183,12 @@ async function calculateDeliveryCharge() {
     deliveryCharge = 0;
   }
 
-  /*document.getElementById("delivery-status").innerHTML =
-    `📍 Distance: <b>${distanceKM.toFixed(2)} km</b><br>
-     🚚 Delivery Charge: <b>₹${deliveryCharge}</b>`;*/
-
   document.getElementById("delivery-status").innerHTML =
-  `📌 Location Found: ${bestResult.formatted}<br>`;
+    `📍 Distance: <b>${distanceKM.toFixed(2)} km</b><br>
+     🚚 Delivery Charge: <b>₹${deliveryCharge}</b>`;
+
+  /*document.getElementById("delivery-status").innerHTML =
+  `📌 Location Found: ${bestResult.formatted}<br>`;*/
   
   showSummary();
   updateUPI();
@@ -279,8 +279,8 @@ function toBase64(file) {
 }
 
 // ✅ Haversine Formula Distance Calculator (Accurate)
-  function getDistanceKM(lat1, lon1, lat2, lon2) {
-  
+/*  function getDistanceKM(lat1, lon1, lat2, lon2) {
+      //originLat, originLon, destLat, destLon
     const R = 6371; // Earth radius in KM
   
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -290,6 +290,25 @@ function toBase64(file) {
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1 * Math.PI / 180) *
       Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    return R * c;
+  }*/
+
+// ✅ Haversine Formula Distance Calculator (Accurate)
+  function getDistanceKM(originLat, originLon, destLat, destLon) {
+      //originLat, originLon, destLat, destLon
+    const R = 6371; // Earth radius in KM
+  
+    const dLat = (destLat - originLat) * Math.PI / 180;
+    const dLon = (destLon - originLon) * Math.PI / 180;
+  
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(originLat * Math.PI / 180) *
+      Math.cos(destLat * Math.PI / 180) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
   
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
