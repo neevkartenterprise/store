@@ -25,10 +25,10 @@
     </a>
   </div>
 
-  <!-- RIGHT: Payment Steps + Payment -->
+  <!-- RIGHT: Steps + Address + Payment -->
   <div class="checkout-box">
 
-    <!-- Payment Steps -->
+    <!-- ✅ Payment Steps -->
     <h3>📝 Payment Steps</h3>
     <p>1. Pay the exact amount using QR OR Payment Apps.</p>
     <p>2. After payment, enter your UPI Transaction ID / Ref. No. / UTR or attach screenshot below.</p>
@@ -36,7 +36,39 @@
 
     <hr>
 
-    <!-- Payment Section -->
+    <!-- ✅ Delivery Address Section (Moved Here) -->
+    <h3>📍 Delivery Address (Vadodara Only)</h3>
+
+    <input id="addr1" placeholder="Address Line 1"><br><br>
+    <input id="addr2" placeholder="Address Line 2 (Optional)"><br><br>
+
+    <input id="area" placeholder="Area / Society"><br><br>
+    <input id="landmark" placeholder="Nearby Landmark"><br><br>
+
+    <!-- Fixed City/State/Country -->
+    <input value="Vadodara" disabled><br><br>
+    <input value="Gujarat" disabled><br><br>
+    <input value="India" disabled><br><br>
+
+    <!-- Map Button -->
+    <a id="map-link" target="_blank">
+      <button type="button">
+        📍 View Delivery Location on Google Maps
+      </button>
+    </a>
+
+    <br><br>
+
+    <!-- Delivery Charge Button -->
+    <button onclick="calculateDeliveryCharge()" type="button">
+      🚚 Calculate Delivery Charges
+    </button>
+
+    <p id="delivery-status"></p>
+
+    <hr>
+
+    <!-- ✅ Payment Section -->
     <h2>📲 Pay Using UPI QR</h2>
 
     <p>Scan the QR code below and pay the exact amount.</p>
@@ -75,6 +107,7 @@
 
     <br><br>
 
+    <!-- Submit Button -->
     <button id="submit-btn" onclick="submitOrder()">
       ✅ Submit Order
     </button>
@@ -84,38 +117,6 @@
   </div>
 
 </div>
-
-<!-- ✅ DELIVERY ADDRESS SECTION (UNCHANGED POSITION) -->
-<h3>📍 Delivery Address (Vadodara Only)</h3>
-
-<input id="addr1" placeholder="Address Line 1"><br><br>
-<input id="addr2" placeholder="Address Line 2 (Optional)"><br><br>
-
-<input id="area" placeholder="Area / Society"><br><br>
-<input id="landmark" placeholder="Nearby Landmark"><br><br>
-
-<!-- Fixed City/State/Country -->
-<input value="Vadodara" disabled><br><br>
-<input value="Gujarat" disabled><br><br>
-<input value="India" disabled><br><br>
-
-<!-- Map Button -->
-<a id="map-link" target="_blank">
-  <button type="button">
-    📍 View Delivery Location on Google Maps
-  </button>
-</a>
-
-<br><br>
-
-<!-- ✅ NEW BUTTON -->
-<button onclick="calculateDeliveryCharge()" type="button">
-  🚚 Calculate Delivery Charges
-</button>
-
-<p id="delivery-status"></p>
-
-<br><br>
 
 <script src="checkout.js"></script>
 
