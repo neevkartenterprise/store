@@ -68,14 +68,18 @@ function updateUPI() {
   const upiLink =
     `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalTotal}&tn=OrderPurchase`;
 
+  // Update Pay Button Link
   document.getElementById("upi-pay-link").href = upiLink;
 
+  // ✅ QR Code Refresh (Prevent Cache)
   const qrUrl =
-    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=` +
-    encodeURIComponent(upiLink);
+    `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=` +
+    encodeURIComponent(upiLink) +
+    `&t=` + new Date().getTime(); // Cache buster
 
   document.getElementById("qr-image").src = qrUrl;
 }
+
 
 updateUPI();
 
@@ -153,6 +157,7 @@ async function calculateDeliveryCharge() {
     `📍 Distance: <b>${distanceKM.toFixed(2)} km</b> | Delivery Charge: <b>₹${deliveryCharge}</b>`;
 
   showSummary();
+  updateUPI(); // ✅ Refresh QR again after delivery calculation
 }
 
 // -------------------------------
