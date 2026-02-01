@@ -68,19 +68,27 @@ function updateUPI() {
   const upiLink =
     `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalTotal}&tn=OrderPurchase`;
 
-  // Update Pay Button Link
   document.getElementById("upi-pay-link").href = upiLink;
 
-  // ✅ QR Code Refresh (Prevent Cache)
+  // ✅ Use Google QR API (Reliable)
   const qrUrl =
-    `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=` +
-    encodeURIComponent(upiLink) +
-    `&t=` + new Date().getTime(); // Cache buster
+    "https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=" +
+    encodeURIComponent(upiLink);
 
-  document.getElementById("qr-image").src = qrUrl;
+  const qrImg = document.getElementById("qr-image");
+  qrImg.src = qrUrl;
+
+  // Status message
+  qrImg.onload = function () {
+    document.getElementById("qr-status").innerText =
+      "✅ QR Code Ready. Please Scan.";
+  };
+
+  qrImg.onerror = function () {
+    document.getElementById("qr-status").innerText =
+      "❌ QR failed to load. Please check your internet.";
+  };
 }
-
-
 updateUPI();
 
 // -------------------------------
@@ -168,6 +176,12 @@ async function submitOrder() {
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
 
+    // ✅ DELIVERY CHECK (Add Here)
+  if (deliveryCharge === 0) {
+    alert("🚚 Please calculate delivery charges first.");
+    return;
+  }
+  
   const utrValue = document.getElementById("utr").value.trim();
   const file = document.getElementById("payment-proof").files[0];
 
