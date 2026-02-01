@@ -113,6 +113,13 @@ async function calculateDeliveryCharge() {
     document.getElementById("landmark").value + ", " +
     pin + ", Vadodara, Gujarat, India";
 
+  if (!document.getElementById("addr1").value.trim() ||
+      !document.getElementById("area").value.trim()) {
+  
+    alert("❌ Please enter Address Line 1 and Area/Society.");
+    return;
+  }
+  
   const OPENCAGE_KEY = "805a2f41a9824abdab5cc52b125be639";
 
   // ✅ NO bounds restriction
@@ -120,7 +127,7 @@ async function calculateDeliveryCharge() {
     `https://api.opencagedata.com/geocode/v1/json?q=` +
     encodeURIComponent(address) +
     `&key=${OPENCAGE_KEY}` +
-    `&countrycode=in&limit=1&no_annotations=1`;
+    `&countrycode=in&limit=5&no_annotations=1`;
 
   let geoRes = await fetch(geoURL);
   let geoData = await geoRes.json();
@@ -130,8 +137,31 @@ async function calculateDeliveryCharge() {
     return;
   }
 
-  let destLat = geoData.results[0].geometry.lat;
-  let destLon = geoData.results[0].geometry.lng;
+  // ✅ Find the best matching result using PIN code
+  let bestResult = null;
+  
+  for (let r of geoData.results) {
+  
+    let comp = r.components;
+  
+    // Match PIN code exactly
+    if (comp.postcode && comp.postcode === pin) {
+      bestResult = r;
+      break;
+    }
+  }
+  
+  // If no postcode match, fallback to first result
+  if (!bestResult) {
+    bestResult = geoData.results[0];
+  }
+  
+  let destLat = bestResult.geometry.lat;
+  let destLon = bestResult.geometry.lng;
+  
+  console.log("Selected Location:", bestResult.formatted);
+  console.log("Lat:", destLat, "Lon:", destLon);
+
 
   // ✅ Debug
   console.log("Destination:", destLat, destLon);
@@ -152,10 +182,13 @@ async function calculateDeliveryCharge() {
     deliveryCharge = 0;
   }
 
-  document.getElementById("delivery-status").innerHTML =
+  /*document.getElementById("delivery-status").innerHTML =
     `📍 Distance: <b>${distanceKM.toFixed(2)} km</b><br>
-     🚚 Delivery Charge: <b>₹${deliveryCharge}</b>`;
+     🚚 Delivery Charge: <b>₹${deliveryCharge}</b>`;*/
 
+  document.getElementById("delivery-status").innerHTML =
+  `📌 Location Found: ${bestResult.formatted}<br>`;
+  
   showSummary();
   updateUPI();
 }
