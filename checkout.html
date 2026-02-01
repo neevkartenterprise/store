@@ -14,10 +14,15 @@
   <!-- LEFT: Order Summary -->
   <div class="checkout-box">
     <h2>🛒 Order Summary</h2>
+
     <div id="order-summary"></div>
+
     <h3>Total Amount: ₹<span id="final-total"></span></h3>
+
     <!-- Add More Items Button -->
-    <a href="index.html"><button>🏠 Add more items</button></a>
+    <a href="index.html">
+      <button>🏠 Add more items</button>
+    </a>
   </div>
 
   <!-- RIGHT: Payment Steps + Payment -->
@@ -59,6 +64,7 @@
     <small>
       You can either enter UPI Transaction ID or upload screenshot to confirm the payment.
     </small>
+
     <!-- Option 1 -->
     <input id="utr" placeholder="Enter UPI Transaction ID / UTR"><br><br>
 
@@ -79,7 +85,8 @@
 
 </div>
 
-  <h3>📍 Delivery Address (Vadodara Only)</h3>
+<!-- ✅ DELIVERY ADDRESS SECTION (UNCHANGED POSITION) -->
+<h3>📍 Delivery Address (Vadodara Only)</h3>
 
 <input id="addr1" placeholder="Address Line 1"><br><br>
 <input id="addr2" placeholder="Address Line 2 (Optional)"><br><br>
@@ -101,8 +108,16 @@
 
 <br><br>
 
+<!-- ✅ NEW BUTTON -->
+<button onclick="calculateDeliveryCharge()" type="button">
+  🚚 Calculate Delivery Charges
+</button>
+
+<p id="delivery-status"></p>
+
+<br><br>
+
 <script src="checkout.js"></script>
 
 </body>
 </html>
-
