@@ -1,18 +1,24 @@
-// ✅ Generate Order Number
+// ================== ORDER SETUP ==================
 const orderID = "ORD" + Date.now();
-
 const API_URL = "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2e6YIvqBjPqPCHQ3zkr7gVlj9VsT3O19EeJs-gUlzSAna/exec";
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// ================== LOAD DATA ==================
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+const deliveryCharge = Number(localStorage.getItem("deliveryCharge")) || 0;
 
-// Calculate Total
-let totalAmount = cart.reduce(
+// ================== CALCULATIONS ==================
+const itemsTotal = cart.reduce(
   (sum, item) => sum + Number(item.Price) * item.qty,
   0
 );
-document.getElementById("final-total").innerText = totalAmount;
 
-// Show Order Summary
+const finalPayable = itemsTotal + deliveryCharge;
+
+// ================== UPDATE UI ==================
+document.getElementById("delivery-charge").innerText = deliveryCharge;
+document.getElementById("final-total").innerText = finalPayable;
+
+// ================== ORDER SUMMARY ==================
 function showSummary() {
   const summaryDiv = document.getElementById("order-summary");
   summaryDiv.innerHTML = "";
@@ -31,44 +37,35 @@ function showSummary() {
       <span>Delivery Charges</span>
       <span>₹${deliveryCharge}</span>
     </div>
-  `;
 
-  
-  // Divider + Total Line
-  summaryDiv.innerHTML += `
     <hr class="summary-divider">
+
     <div class="summary-total">
-      <b>Total: ₹${totalAmount}</b>
+      <b>Total: ₹${finalPayable}</b>
     </div>
   `;
 }
 
 showSummary();
 
-// Generate UPI QR Code
-const upiID = "amitjadav-1@okaxis";   // <-- Change this if bank account need to update
+// ================== UPI PAYMENT ==================
+const upiID = "amitjadav-1@okaxis";
 const upiName = "Neev Kart Enterprise";
 
-// const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
 const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=OrderPurchase`;
 
-
-// ✅ Attach App Buttons
 document.getElementById("upi-pay-link").href = upiLink;
 
-const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+document.getElementById("qr-image").src =
+  `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 
-document.getElementById("qr-image").src = qrUrl;
-
-// Submit Order
+// ================== SUBMIT ORDER ==================
 async function submitOrder() {
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
-
   const utrValue = document.getElementById("utr").value.trim();
   const file = document.getElementById("payment-proof").files[0];
 
-  // Require at least one proof
   if (!utrValue && !file) {
     document.getElementById("status").innerText =
       "❌ Please enter Transaction ID OR upload screenshot.";
@@ -86,12 +83,13 @@ async function submitOrder() {
   }
 
   const orderData = {
-    orderID: orderID,
-    name: name,
-    phone: phone,
-    utr: utrValue,
-    total: totalAmount,
+    orderID,
+    name,
+    phone,
+    deliveryCharge,
+    total: finalPayable,
     items: JSON.stringify(cart),
+    utr: utrValue,
     screenshot: screenshotData
   };
 
@@ -109,6 +107,7 @@ async function submitOrder() {
       "🎉 Order Submitted Successfully! Redirecting...";
 
     localStorage.removeItem("cart");
+    localStorage.removeItem("deliveryCharge");
 
     document.getElementById("submit-btn").disabled = true;
     document.getElementById("submit-btn").innerText = "Order Placed ✅";
@@ -122,7 +121,7 @@ async function submitOrder() {
   }
 }
 
-// Convert file to Base64
+// ================== FILE TO BASE64 ==================
 function toBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -131,7 +130,3 @@ function toBase64(file) {
     reader.readAsDataURL(file);
   });
 }
-
-let deliveryCharge = Number(localStorage.getItem("deliveryCharge")) || 0;
-let finalPayable = totalAmount + deliveryCharge;
-document.getElementById("final-total").innerText = finalPayable;
