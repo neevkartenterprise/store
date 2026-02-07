@@ -1,6 +1,7 @@
 // ================== ORDER SETUP ==================
-const orderID = "ORD" + Date.now();
-const API_URL = "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2e6YIvqBjPqPCHQ3zkr7gVlj9VsT3O19EeJs-gUlzSAna/exec";
+const orderId = "ORD" + Date.now();
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxOyjLevmfeZ2CT7QjXLvp2e6YIvqBjPqPCHQ3zkr7gVlj9VsT3O19EeJs-gUlzSAna/exec";
 
 // ================== LOAD DATA ==================
 const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -30,25 +31,17 @@ function showSummary() {
 
     summaryDiv.innerHTML += `
       <div class="summary-line">
-        <span class="summary-name">
-          ${item.Name}
-        </span>
-        <span class="summary-price">
-          ₹${rate} × ${qty} = ₹${amount}
-        </span>
+        <span>${item.Name}</span>
+        <span>₹${rate} × ${qty} = ₹${amount}</span>
       </div>
     `;
   });
 
-  // Divider + ORDER TOTAL (items only)
   summaryDiv.innerHTML += `
-    <hr class="summary-divider">
-    <div class="summary-total">
-      <b>Order Total: ₹${itemsTotal}</b>
-    </div>
+    <hr>
+    <div><b>Order Total: ₹${itemsTotal}</b></div>
   `;
 }
-
 
 showSummary();
 
@@ -56,30 +49,33 @@ showSummary();
 const upiID = "amitjadav-1@okaxis";
 const upiName = "Neev Kart Enterprise";
 
-const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=OrderPurchase`;
+const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=${orderId}`;
 
 document.getElementById("upi-pay-link").href = upiLink;
-
 document.getElementById("qr-image").src =
   `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 
 // ================== SUBMIT ORDER ==================
 async function submitOrder() {
-  /*const name = document.getElementById("cust-name").value.trim();
-  const phone = document.getElementById("cust-phone").value.trim();*/
   const utrValue = document.getElementById("utr").value.trim();
   const file = document.getElementById("payment-proof").files[0];
 
   if (!utrValue && !file) {
     document.getElementById("status").innerText =
-      "❌ Please enter Transaction ID OR upload screenshot.";
+      "❌ Please enter UTR OR upload payment screenshot.";
     return;
   }
 
-  /*if (!name || !phone) {
-    alert("Please fill Name and Phone!");
+  // ✅ Get customer details from localStorage
+  const customerDetails = JSON.parse(
+    localStorage.getItem("customerDetails")
+  );
+
+  if (!customerDetails) {
+    document.getElementById("status").innerText =
+      "❌ Customer details missing. Please restart checkout.";
     return;
-  }*/
+  }
 
   let screenshotData = "";
   if (file) {
@@ -88,42 +84,48 @@ async function submitOrder() {
 
   const orderData = {
     orderID,
-    /*name,
-    phone,*/
+    customer: customerDetails,
+    items: cart,
     deliveryCharge,
-    total: finalPayable,
-    items: JSON.stringify(cart),
+    totalAmount: finalPayable,
     utr: utrValue,
     screenshot: screenshotData
   };
 
-  document.getElementById("status").innerText = "Submitting order...";
+  document.getElementById("status").innerText = "⏳ Submitting order...";
 
-  const response = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(orderData)
-  });
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(orderData)
+    });
 
-  const result = await response.text();
+    const result = await response.text();
 
-  if (result === "Success") {
-    document.getElementById("status").innerHTML =
-      "🎉 Order Submitted Successfully! Redirecting...";
+    if (result === "Success") {
+      document.getElementById("status").innerHTML =
+        "🎉 Order Submitted Successfully!";
 
-    localStorage.removeItem("cart");
-    localStorage.removeItem("deliveryCharge");
+      localStorage.removeItem("cart");
+      localStorage.removeItem("deliveryCharge");
+      localStorage.removeItem("customerDetails");
 
-    document.getElementById("submit-btn").disabled = true;
-    document.getElementById("submit-btn").innerText = "Order Placed ✅";
+      document.getElementById("submit-btn").disabled = true;
+      document.getElementById("submit-btn").innerText = "Order Placed ✅";
 
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
-  } else {
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 3000);
+    } else {
+      throw new Error(result);
+    }
+  } catch (err) {
+    console.error(err);
     document.getElementById("status").innerText =
-      "❌ Error submitting order. Please try again.";
+      "❌ Failed to submit order. Please try again.";
   }
 }
+
 
 // ================== FILE TO BASE64 ==================
 function toBase64(file) {
