@@ -18,34 +18,51 @@ async function loadDeliveryCharges() {
 
     const res = await fetch(DELIVERY_API);
 
-    // ❌ API not reachable
     if (!res.ok) {
-      throw new Error("HTTP Error " + res.status);
+      throw new Error("HTTP error " + res.status);
     }
 
-    const text = await res.text();
-    console.log("📦 Raw API response:", text);
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      throw new Error("API did not return valid JSON");
-    }
+    const data = await res.json();
+    console.log("✅ Delivery API data:", data);
 
     if (!Array.isArray(data)) {
       throw new Error("Invalid API response format");
     }
 
     const areaSelect = document.getElementById("area");
+
+    // ✅ reset dropdown
     areaSelect.innerHTML =
-      `<option value="">Select
+      `<option value="">Select Area / Road *</option>`;
 
+    deliveryMap = {};
 
+    data.forEach(item => {
+      if (!item.area) return;
 
-// Load on page open
+      const areaName = item.area.trim();
+      const charge = Number(item.deliveryCharge);
+
+      if (isNaN(charge)) return;
+
+      deliveryMap[areaName.toLowerCase()] = charge;
+
+      const opt = document.createElement("option");
+      opt.value = areaName;
+      opt.textContent = areaName;
+      areaSelect.appendChild(opt);
+    });
+
+    console.log("🗺️ Loaded Areas:", Object.keys(deliveryMap));
+
+  } catch (err) {
+    console.error("❌ Failed to load delivery areas:", err);
+    alert("❌ Unable to load delivery areas. Please refresh.");
+  }
+}
+
+// ✅ MUST be called
 loadDeliveryCharges();
-
 
 /**************************************
  * CALCULATE DELIVERY & SAVE DETAILS
@@ -57,7 +74,6 @@ function calculateDelivery() {
   const addr2 = document.getElementById("addr2").value.trim();
   const area = document.getElementById("area").value;
 
-  // Mandatory validation
   if (!name || !phone || !addr1 || !addr2 || !area) {
     alert("❌ Please fill all mandatory fields.");
     return;
@@ -75,22 +91,19 @@ function calculateDelivery() {
     return;
   }
 
-  // Show delivery info
   document.getElementById("delivery-info").innerHTML =
     `🚚 Delivery Charges: <b>₹${charge}</b> will be added`;
 
-  // Save delivery charge
   localStorage.setItem("deliveryCharge", charge);
 
-  // Save customer details
   localStorage.setItem(
     "customerDetails",
     JSON.stringify({
-      name: name,
-      phone: phone,
+      name,
+      phone,
       addressLine1: addr1,
       addressLine2: addr2,
-      area: area,
+      area,
       city: "Vadodara",
       state: "Gujarat",
       country: "India",
@@ -98,17 +111,12 @@ function calculateDelivery() {
     })
   );
 
-  // Show Proceed button
   document.getElementById("proceed-btn").style.display = "inline-block";
 }
 
 /**************************************
  * NAVIGATION
  **************************************/
-function goBack() {
-  window.location.href = "cart.html";
-}
-
 function goCheckout() {
   window.location.href = "checkout.html";
 }
