@@ -66,30 +66,26 @@ async function submitOrder() {
     return;
   }
 
-  // ✅ Get customer details from localStorage
-  const customerDetails = JSON.parse(
-    localStorage.getItem("customerDetails")
-  );
-
+  const customerDetails = JSON.parse(localStorage.getItem("customerDetails"));
   if (!customerDetails) {
     document.getElementById("status").innerText =
       "❌ Customer details missing. Please restart checkout.";
     return;
   }
 
-  let screenshotData = "";
+  let screenshotBase64 = "";
   if (file) {
-    screenshotData = await toBase64(file);
+    screenshotBase64 = await toBase64(file);
   }
 
   const orderData = {
-    orderID,
+    orderId,                    // ✅ FIXED
     customer: customerDetails,
-    items: cart,
+    cart,
     deliveryCharge,
     totalAmount: finalPayable,
     utr: utrValue,
-    screenshot: screenshotData
+    screenshotBase64            // ✅ FIXED
   };
 
   document.getElementById("status").innerText = "⏳ Submitting order...";
@@ -100,9 +96,9 @@ async function submitOrder() {
       body: JSON.stringify(orderData)
     });
 
-    const result = await response.text();
+    const result = await response.json();   // ✅ FIXED
 
-    if (result === "Success") {
+    if (result.success) {
       document.getElementById("status").innerHTML =
         "🎉 Order Submitted Successfully!";
 
@@ -117,14 +113,16 @@ async function submitOrder() {
         window.location.href = "index.html";
       }, 3000);
     } else {
-      throw new Error(result);
+      throw new Error(result.error || "Unknown error");
     }
+
   } catch (err) {
     console.error(err);
     document.getElementById("status").innerText =
       "❌ Failed to submit order. Please try again.";
   }
 }
+
 
 
 // ================== FILE TO BASE64 ==================
