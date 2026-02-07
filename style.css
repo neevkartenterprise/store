@@ -312,7 +312,15 @@ button:hover {
   display: block;
   margin: 0 auto;       /* ✅ centers horizontally */
 }
-
+.checkout-box small {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+  color: #555;
+}
+.checkout-box br {
+  line-height: 1.2;
+}
 
 /* Submit Button */
 #submit-btn {
