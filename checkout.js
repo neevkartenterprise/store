@@ -24,23 +24,31 @@ function showSummary() {
   summaryDiv.innerHTML = "";
 
   cart.forEach(item => {
+    const rate = Number(item.Price);
+    const qty = item.qty;
+    const amount = rate * qty;
+
     summaryDiv.innerHTML += `
       <div class="summary-line">
-        <span class="summary-name">${item.Name}</span>
-        <span class="summary-price">₹${item.Price} × ${item.qty}</span>
+        <span class="summary-name">
+          ${item.Name}
+        </span>
+        <span class="summary-price">
+          ₹${rate} × ${qty} = ₹${amount}
+        </span>
       </div>
     `;
   });
 
+  // Divider + ORDER TOTAL (items only)
   summaryDiv.innerHTML += `
-
     <hr class="summary-divider">
-
     <div class="summary-total">
-      <b>Total: ₹${finalPayable}</b>
+      <b>Order Total: ₹${itemsTotal}</b>
     </div>
   `;
 }
+
 
 showSummary();
 
