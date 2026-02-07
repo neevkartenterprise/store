@@ -96,9 +96,9 @@ async function submitOrder() {
       body: JSON.stringify(orderData)
     });
 
-    const result = await response.json();   // ✅ FIXED
+    const result = await response.json();
 
-    if (result.success) {
+    if (result.success === true) {
       document.getElementById("status").innerHTML =
         "🎉 Order Submitted Successfully!";
 
