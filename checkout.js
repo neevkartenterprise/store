@@ -33,10 +33,6 @@ function showSummary() {
   });
 
   summaryDiv.innerHTML += `
-    <div class="summary-line">
-      <span>Delivery Charges</span>
-      <span>₹${deliveryCharge}</span>
-    </div>
 
     <hr class="summary-divider">
 
