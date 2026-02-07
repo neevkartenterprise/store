@@ -65,8 +65,8 @@ document.getElementById("qr-image").src =
 
 // ================== SUBMIT ORDER ==================
 async function submitOrder() {
-  const name = document.getElementById("cust-name").value.trim();
-  const phone = document.getElementById("cust-phone").value.trim();
+  /*const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();*/
   const utrValue = document.getElementById("utr").value.trim();
   const file = document.getElementById("payment-proof").files[0];
 
@@ -76,10 +76,10 @@ async function submitOrder() {
     return;
   }
 
-  if (!name || !phone) {
+  /*if (!name || !phone) {
     alert("Please fill Name and Phone!");
     return;
-  }
+  }*/
 
   let screenshotData = "";
   if (file) {
@@ -88,8 +88,8 @@ async function submitOrder() {
 
   const orderData = {
     orderID,
-    name,
-    phone,
+    /*name,
+    phone,*/
     deliveryCharge,
     total: finalPayable,
     items: JSON.stringify(cart),
