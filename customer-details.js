@@ -5,7 +5,7 @@ const DELIVERY_API =
   "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
 /**************************************
- * GLOBALS
+ * GLOBAL
  **************************************/
 let deliveryMap = {};
 
@@ -14,34 +14,33 @@ let deliveryMap = {};
  **************************************/
 async function loadDeliveryCharges() {
   try {
+    console.log("📡 Fetching delivery areas...");
+
     const res = await fetch(DELIVERY_API);
-    const data = await res.json();
+
+    // ❌ API not reachable
+    if (!res.ok) {
+      throw new Error("HTTP Error " + res.status);
+    }
+
+    const text = await res.text();
+    console.log("📦 Raw API response:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      throw new Error("API did not return valid JSON");
+    }
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid API response format");
+    }
 
     const areaSelect = document.getElementById("area");
     areaSelect.innerHTML =
-      `<option value="">Select Area / Road *</option>`;
+      `<option value="">Select
 
-    deliveryMap = {};
-
-    data.forEach(item => {
-      if (!item.area) return;
-
-      const areaName = item.area.trim();
-      const charge = Number(item.deliveryCharge) || 0;
-
-      deliveryMap[areaName.toLowerCase()] = charge;
-
-      const opt = document.createElement("option");
-      opt.value = areaName;
-      opt.textContent = areaName;
-      areaSelect.appendChild(opt);
-    });
-
-  } catch (err) {
-    console.error("Failed to load delivery areas:", err);
-    alert("❌ Unable to load delivery areas. Please refresh.");
-  }
-}
 
 
 // Load on page open
