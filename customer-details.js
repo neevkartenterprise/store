@@ -18,39 +18,30 @@ async function loadDeliveryCharges() {
     const data = await res.json();
 
     const areaSelect = document.getElementById("area");
-    areaSelect.innerHTML = `<option value="">Select Area / Road *</option>`;
+    areaSelect.innerHTML =
+      `<option value="">Select Area / Road *</option>`;
 
-    deliveryMap = {}; // reset
+    deliveryMap = {};
 
     data.forEach(item => {
-      const areaName = String(item.area || "").trim();
-      const charge = Number(item.deliveryCharge);
+      if (!item.area) return;
 
-      // 🚨 STRICT CHECK ONLY ON AREA NAME
-      if (!areaName) return;
-
-      // Allow 0, allow numbers, block NaN only
-      if (Number.isNaN(charge)) {
-        console.warn("Invalid charge for:", areaName, item.deliveryCharge);
-        return;
-      }
+      const areaName = item.area.trim();
+      const charge = Number(item.deliveryCharge) || 0;
 
       deliveryMap[areaName.toLowerCase()] = charge;
 
       const opt = document.createElement("option");
       opt.value = areaName;
-      opt.textContent = `${areaName} (₹${charge})`;
+      opt.textContent = areaName;
       areaSelect.appendChild(opt);
     });
-
-    console.log("✅ Loaded delivery map:", deliveryMap);
 
   } catch (err) {
     console.error("Failed to load delivery areas:", err);
     alert("❌ Unable to load delivery areas. Please refresh.");
   }
 }
-
 
 // Load on page open
 loadDeliveryCharges();
