@@ -82,6 +82,7 @@ async function submitOrder() {
     orderId,                    // ✅ FIXED
     customer: customerDetails,
     cart,
+    orderTotal: itemsTotal,   // ✅ NEW (without delivery)
     deliveryCharge,
     totalAmount: finalPayable,
     utr: utrValue,
