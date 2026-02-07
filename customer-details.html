@@ -38,16 +38,18 @@
     <h3 id="delivery-info"></h3>
 
     <!-- Buttons -->
-    <div class="cart-buttons">
-      <a href="cart.html"><button>⬅ Back</button></a>
-      <button onclick="calculateDelivery()">Next</button>
+    <div class="cart-buttons" id="action-buttons">
+      <a href="cart.html">
+        <button>⬅ Back</button>
+      </a>
+    
+      <button id="next-btn" onclick="calculateDelivery()">Next</button>
+    
+      <button id="proceed-btn" style="display:none" onclick="goCheckout()">
+        ✅ Proceed to Checkout
+      </button>
     </div>
 
-    <br>
-
-    <button id="proceed-btn" style="display:none" onclick="goCheckout()">
-      ✅ Proceed to Checkout
-    </button>
 
   </div>
 
