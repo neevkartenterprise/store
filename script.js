@@ -57,22 +57,21 @@ function decreaseFromCart(id) {
 //If cart is emplty
 function toggleCartAccess() {
   const cartLink = document.getElementById("cart-link");
-  const emptyMsg = document.getElementById("empty-cart-msg");
+  const tooltip = document.getElementById("cart-tooltip");
 
   if (cart.length === 0) {
-    // Disable cart navigation
+    cartLink.classList.add("disabled-cart");
     cartLink.style.pointerEvents = "none";
-    cartLink.style.opacity = "0.5";
+    cartLink.style.opacity = "0.6";
 
-    emptyMsg.style.display = "block";
+    tooltip.style.display = "none"; // shown via hover only
   } else {
-    // Enable cart navigation
+    cartLink.classList.remove("disabled-cart");
     cartLink.style.pointerEvents = "auto";
     cartLink.style.opacity = "1";
-
-    emptyMsg.style.display = "none";
   }
 }
+
 
 function getCartButton(id) {
   let item = cart.find(p => p.ID === id);
