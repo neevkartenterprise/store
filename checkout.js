@@ -26,6 +26,14 @@ function showSummary() {
     `;
   });
 
+  summaryDiv.innerHTML += `
+    <div class="summary-line">
+      <span>Delivery Charges</span>
+      <span>₹${deliveryCharge}</span>
+    </div>
+  `;
+
+  
   // Divider + Total Line
   summaryDiv.innerHTML += `
     <hr class="summary-divider">
@@ -41,7 +49,9 @@ showSummary();
 const upiID = "amitjadav-1@okaxis";   // <-- Change this if bank account need to update
 const upiName = "Neev Kart Enterprise";
 
-const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
+// const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${totalAmount}&tn=OrderPurchase`;
+const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=OrderPurchase`;
+
 
 // ✅ Attach App Buttons
 document.getElementById("upi-pay-link").href = upiLink;
@@ -121,3 +131,7 @@ function toBase64(file) {
     reader.readAsDataURL(file);
   });
 }
+
+let deliveryCharge = Number(localStorage.getItem("deliveryCharge")) || 0;
+let finalPayable = totalAmount + deliveryCharge;
+document.getElementById("final-total").innerText = finalPayable;
