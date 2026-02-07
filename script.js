@@ -54,6 +54,26 @@ function decreaseFromCart(id) {
   displayProducts(products);
 }
 
+//If cart is emplty
+function toggleCartAccess() {
+  const cartLink = document.getElementById("cart-link");
+  const emptyMsg = document.getElementById("empty-cart-msg");
+
+  if (cart.length === 0) {
+    // Disable cart navigation
+    cartLink.style.pointerEvents = "none";
+    cartLink.style.opacity = "0.5";
+
+    emptyMsg.style.display = "block";
+  } else {
+    // Enable cart navigation
+    cartLink.style.pointerEvents = "auto";
+    cartLink.style.opacity = "1";
+
+    emptyMsg.style.display = "none";
+  }
+}
+
 function getCartButton(id) {
   let item = cart.find(p => p.ID === id);
 
@@ -97,6 +117,8 @@ function addToCart(id) {
 function updateCartCount() {
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
   document.getElementById("cart-count").innerText = totalItems;
+
+  toggleCartAccess(); // ✅ important. Do not allow access if cart is empty.
 }
 
 // Search Feature
@@ -111,3 +133,4 @@ document.getElementById("search").addEventListener("input", e => {
 // Initial Load
 loadProducts();
 updateCartCount();
+toggleCartAccess();
