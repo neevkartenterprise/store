@@ -299,13 +299,20 @@ button:hover {
 }
 
 /* Checkout Inputs */
-.checkout-box input {
-  width: 90%;
+/* 📍 Customer Details – Centered Half-Width Fields */
+.checkout-box input,
+.checkout-box select {
+  width: 50%;
+  max-width: 420px;     /* prevents over-stretch on big screens */
+  min-width: 260px;     /* keeps usable on smaller screens */
   padding: 10px;
   font-size: 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  display: block;
+  margin: 0 auto;       /* ✅ centers horizontally */
 }
+
 
 /* Submit Button */
 #submit-btn {
