@@ -43,6 +43,11 @@ async function loadDeliveryCharges() {
   }
 }
 
+
+// Load on page open
+loadDeliveryCharges();
+
+
 /**************************************
  * CALCULATE DELIVERY & SAVE DETAILS
  **************************************/
@@ -108,6 +113,3 @@ function goBack() {
 function goCheckout() {
   window.location.href = "checkout.html";
 }
-
-// Load on page open
-loadDeliveryCharges();
