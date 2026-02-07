@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Details</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>📍 Customer Details (Vadodara Only)</h1>
+
+<div class="checkout-container">
+
+  <div class="checkout-box">
+
+    <input id="cust-name" placeholder="Full Name *"><br><br>
+    <input id="cust-phone" placeholder="Phone Number *"><br><br>
+
+    <input id="addr1" placeholder="Address Line 1 *"><br><br>
+    <input id="addr2" placeholder="Address Line 2 *"><br><br>
+
+    <!-- Area Dropdown -->
+    <select id="area">
+      <option value="">Select Area / Road *</option>
+    </select><br><br>
+
+    <input value="Vadodara" disabled><br><br>
+    <input value="Gujarat" disabled><br><br>
+    <input value="India" disabled><br><br>
+
+    <small>
+      Delivery charges will be added based on the address provided.
+    </small>
+
+    <hr>
+
+    <!-- Delivery Charge Info -->
+    <h3 id="delivery-info"></h3>
+
+    <!-- Buttons -->
+    <div class="cart-buttons">
+      <a href="cart.html"><button>⬅ Back</button></a>
+      <button onclick="calculateDelivery()">Next</button>
+    </div>
+
+    <br>
+
+    <button id="proceed-btn" style="display:none" onclick="goCheckout()">
+      ✅ Proceed to Checkout
+    </button>
+
+  </div>
+
+</div>
+
+<script src="customer-details.js"></script>
+</body>
+</html>
