@@ -179,10 +179,17 @@ function confirmOrder(orderId) {
       orderId: orderId
     })
   })
-  .then(res => res.json())
   .then(resp => {
-    alert("✅ Order confirmed");
-    loadOrders();
+    if (resp.success) {
+      alert("✅ Order confirmed - Payment confirmed");
+  
+      // remove row from UI
+      const btn = event.target;
+      const row = btn.closest("tr");
+      row.remove();
+    } else {
+      alert("❌ Failed to confirm order");
+    }
   });
 }
 </script>
