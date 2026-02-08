@@ -484,3 +484,8 @@ button:hover {
 * {
   box-sizing: border-box;
 }
+.login-box input,
+.login-box button {
+  box-sizing: border-box;
+  height: 42px;           /* ✅ forces same height */
+}
