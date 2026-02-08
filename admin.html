@@ -173,12 +173,12 @@ function confirmOrder(orderId, event) {
 
   fetch(SCRIPT_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "confirmOrder",
       orderId: orderId
     })
   })
+
   .then(res => res.json())
   .then(resp => {
     if (resp.success === true) {
