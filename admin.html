@@ -168,7 +168,7 @@ function loadOrders() {
     });
 }
 
-function confirmOrder(orderId) {
+function confirmOrder(orderId, event) {
   if (!confirm("Confirm payment for this order?")) return;
 
   fetch(SCRIPT_URL, {
