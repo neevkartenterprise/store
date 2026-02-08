@@ -134,11 +134,17 @@ function loadOrders() {
       data.forEach(order => {
 
         // COLUMN MAPPING (MATCHES YOUR SHEET)
-        const orderId = order[0];   // A
-        const customer = order[2];  // C
-        const phone = order[3];     // D
-        const total = order[10];    // K
-        const status = order[14];   // O
+        //const orderId = order[0];   // A
+        //const customer = order[2];  // C
+        //const phone = order[3];     // D
+        //const total = order[10];    // K
+        //const status = order[14];   // O
+        
+        const orderId  = order[0];
+        const customer = order[2];
+        const phone    = order[3];
+        const total    = order[10];
+        const status   = order[14];
 
         const tr = document.createElement("tr");
 
