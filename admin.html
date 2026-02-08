@@ -179,9 +179,10 @@ function confirmOrder(orderId, event) {
       orderId: orderId
     })
   })
+  .then(res => res.json())
   .then(resp => {
-    if (resp.success) {
-      alert("✅ Order confirmed - Payment confirmed");
+    if (resp.success === true) {
+      alert("✅ Order confirmed – Payment confirmed");
   
       // remove row from UI
       const btn = event.target;
@@ -190,7 +191,12 @@ function confirmOrder(orderId, event) {
     } else {
       alert("❌ Failed to confirm order");
     }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ Server error");
   });
+
 }
 </script>
 
