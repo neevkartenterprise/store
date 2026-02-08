@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin – Order Management</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    button { margin: 2px; padding: 5px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>🛠 Admin – Orders</h2>
+
+<input type="password" id="adminPass" placeholder="Enter Admin Password">
+<button onclick="loadOrders()">Login</button>
+
+<br><br>
+
+<table id="ordersTable">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Customer</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
+
+function loadOrders() {
+  const pass = document.getElementById("adminPass").value;
+  if (pass !== "admin123") {
+    alert("Invalid password");
+    return;
+  }
+
+  fetch(API_URL + "?mode=admin")
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.querySelector("#ordersTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(o => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${o.orderId}</td>
+            <td>${o.customerName}</td>
+            <td>₹${o.totalAmount}</td>
+            <td>${o.status}</td>
+            <td>
+              <button onclick="updateStatus('${o.orderId}','Order Confirmed')">✅ Confirm Order</button>
+              <button onclick="updateStatus('${o.orderId}','Payment Confirmed – Packing Goods')">💰 Confirm Payment</button>
+              <button onclick="updateStatus('${o.orderId}','Cancelled')">❌ Cancel</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+}
+
+function updateStatus(orderId, status) {
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      adminAction: true,
+      orderId,
+      status
+    })
+  }).then(() => {
+    alert("Status updated");
+    loadOrders();
+  });
+}
+</script>
+
+</body>
+</html>
