@@ -94,6 +94,22 @@
 
 <!-- ORDERS -->
 <div id="ordersSection" style="display:none;">
+  <div style="margin-bottom:15px; display:flex; gap:10px; flex-wrap:wrap;">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search Order ID / Customer / Phone"
+      onkeyup="applyFilters()"
+      style="padding:8px; width:260px;"
+    >
+  
+    <select id="statusFilter" onchange="applyFilters()" style="padding:8px;">
+      <option value="">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Payment Confirmed">Payment Confirmed</option>
+      <option value="Confirmed">Confirmed</option>
+    </select>
+  </div>
   <table>
     <thead>
       <tr>
@@ -110,6 +126,8 @@
 </div>
 
 <script>
+let ALL_ORDERS = [];
+
 const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
@@ -128,10 +146,9 @@ function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
     .then(res => res.json())
     .then(data => {
-      const tbody = document.getElementById("ordersTable");
-      tbody.innerHTML = "";
-
-      data.forEach(order => {
+      ALL_ORDERS = data;   // store once
+      renderOrders(data);
+    });
 
         // COLUMN MAPPING (MATCHES YOUR SHEET)
         //const orderId = order[0];   // A
@@ -164,7 +181,66 @@ function loadOrders() {
         `;
 
         tbody.appendChild(tr);
-      });
+      }
+
+function renderOrders(data) {
+  const tbody = document.getElementById("ordersTable");
+  tbody.innerHTML = "";
+
+  data.forEach(order => {
+
+    const orderId  = order[0];
+    const customer = order[2];
+    const phone    = order[3];
+    const total    = order[10];
+    const status   = order[14];
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${orderId}</td>
+      <td>${customer}</td>
+      <td>${phone}</td>
+      <td>₹${total}</td>
+      <td>${status}</td>
+      <td>
+        <button class="confirm-btn"
+          ${status.includes("Payment Confirmed") ? "disabled" : ""}
+          onclick="confirmOrder('${orderId}', event)">
+          Confirm
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function applyFilters() {
+  const searchText = document.getElementById("searchInput").value.toLowerCase();
+  const statusVal  = document.getElementById("statusFilter").value.toLowerCase();
+
+  const filtered = ALL_ORDERS.filter(order => {
+    const orderId  = String(order[0]).toLowerCase();
+    const customer = String(order[2]).toLowerCase();
+    const phone    = String(order[3]).toLowerCase();
+    const status   = String(order[14]).toLowerCase();
+
+    const matchesSearch =
+      orderId.includes(searchText) ||
+      customer.includes(searchText) ||
+      phone.includes(searchText);
+
+    const matchesStatus =
+      !statusVal || status.includes(statusVal);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  renderOrders(filtered);
+}
+  
+  );
     });
 }
 
