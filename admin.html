@@ -131,10 +131,33 @@ let ALL_ORDERS = [];
 const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
+/*************** STATUS → ACTION MAP ***************/
+const STATUS_FLOW = {
+  "Order Received": {
+    buttonText: "Confirm Payment",
+    nextAction: "confirmPayment",
+    disabled: false
+  },
+  "Payment Received": {
+    buttonText: "Pick & Pack Items",
+    nextAction: "pickPack",
+    disabled: false
+  },
+  "Items Picked & Packed": {
+    buttonText: "Deliver Order",
+    nextAction: "deliverOrder",
+    disabled: false
+  },
+  "Order Delivered": {
+    buttonText: "Completed",
+    nextAction: null,
+    disabled: true
+  }
+};
+
 /*************** LOGIN ***************/
 function login() {
   const pwd = document.getElementById("adminPassword").value;
-
   if (pwd === ADMIN_PASSWORD) {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("ordersSection").style.display = "block";
@@ -152,10 +175,7 @@ function loadOrders() {
       ALL_ORDERS = data;
       renderOrders(data);
     })
-    .catch(err => {
-      console.error(err);
-      alert("❌ Failed to load orders");
-    });
+    .catch(() => alert("❌ Failed to load orders"));
 }
 
 /*************** RENDER TABLE ***************/
@@ -170,8 +190,12 @@ function renderOrders(data) {
     const total    = order[10];
     const status   = order[14];
 
-    const tr = document.createElement("tr");
+    const flow = STATUS_FLOW[status] || {
+      buttonText: "N/A",
+      disabled: true
+    };
 
+    const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${orderId}</td>
       <td>${customer}</td>
@@ -180,13 +204,12 @@ function renderOrders(data) {
       <td>${status}</td>
       <td>
         <button class="confirm-btn"
-          ${status.includes("Payment Confirmed") ? "disabled" : ""}
-          onclick="confirmOrder('${orderId}', event)">
-          Confirm
+          ${flow.disabled ? "disabled" : ""}
+          onclick="handleAction('${orderId}', '${flow.nextAction}')">
+          ${flow.buttonText}
         </button>
       </td>
     `;
-
     tbody.appendChild(tr);
   });
 }
@@ -208,7 +231,7 @@ function applyFilters() {
       phone.includes(searchText);
 
     const matchesStatus =
-      !statusVal || status.includes(statusVal);
+      !statusVal || status === statusVal;
 
     return matchesSearch && matchesStatus;
   });
@@ -216,33 +239,38 @@ function applyFilters() {
   renderOrders(filtered);
 }
 
-/*************** CONFIRM ORDER ***************/
-function confirmOrder(orderId, event) {
-  if (!confirm("Confirm payment for this order?")) return;
+/*************** ACTION HANDLER ***************/
+function handleAction(orderId, action) {
+  if (!action) return;
+
+  let confirmMsg = "Proceed with this action?";
+  if (action === "confirmPayment") confirmMsg = "Confirm payment for this order?";
+  if (action === "pickPack") confirmMsg = "Mark items as picked & packed?";
+  if (action === "deliverOrder") confirmMsg = "Mark order as delivered?";
+
+  if (!confirm(confirmMsg)) return;
 
   fetch(SCRIPT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      action: "confirmOrder",
+      action: action,
       orderId: orderId
     })
   })
   .then(res => res.json())
   .then(resp => {
-    if (resp.success === true) {
-      alert("✅ Order confirmed – Payment confirmed");
-      event.target.closest("tr").remove();
+    if (resp.success) {
+      alert("✅ Status updated successfully");
+      loadOrders();
     } else {
-      alert("❌ Failed to confirm order");
+      alert("❌ Action failed");
     }
   })
-  .catch(err => {
-    console.error(err);
-    alert("❌ Server error");
-  });
+  .catch(() => alert("❌ Server error"));
 }
 </script>
+
 
 
 </body>
