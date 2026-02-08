@@ -126,13 +126,15 @@
 </div>
 
 <script>
-  let ALL_ORDERS = [];
-  
+let ALL_ORDERS = [];
+
 const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
+/*************** LOGIN ***************/
 function login() {
   const pwd = document.getElementById("adminPassword").value;
+
   if (pwd === ADMIN_PASSWORD) {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("ordersSection").style.display = "block";
@@ -142,53 +144,26 @@ function login() {
   }
 }
 
+/*************** LOAD ORDERS ***************/
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
     .then(res => res.json())
     .then(data => {
-      ALL_ORDERS = data;   // store once
+      ALL_ORDERS = data;
       renderOrders(data);
+    })
+    .catch(err => {
+      console.error(err);
+      alert("❌ Failed to load orders");
     });
+}
 
-        // COLUMN MAPPING (MATCHES YOUR SHEET)
-        //const orderId = order[0];   // A
-        //const customer = order[2];  // C
-        //const phone = order[3];     // D
-        //const total = order[10];    // K
-        //const status = order[14];   // O
-        
-        const orderId  = order[0];
-        const customer = order[2];
-        const phone    = order[3];
-        const total    = order[10];
-        const status   = order[14];
-
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${orderId}</td>
-          <td>${customer}</td>
-          <td>${phone}</td>
-          <td>₹${total}</td>
-          <td>${status}</td>
-          <td>
-            <button class="confirm-btn"
-              ${status === "CONFIRMED" ? "disabled" : ""}
-              onclick="confirmOrder('${orderId}', event)">
-              Confirm
-            </button>
-          </td>
-        `;
-
-        tbody.appendChild(tr);
-      }
-
+/*************** RENDER TABLE ***************/
 function renderOrders(data) {
   const tbody = document.getElementById("ordersTable");
   tbody.innerHTML = "";
 
   data.forEach(order => {
-
     const orderId  = order[0];
     const customer = order[2];
     const phone    = order[3];
@@ -216,6 +191,7 @@ function renderOrders(data) {
   });
 }
 
+/*************** FILTER ***************/
 function applyFilters() {
   const searchText = document.getElementById("searchInput").value.toLowerCase();
   const statusVal  = document.getElementById("statusFilter").value.toLowerCase();
@@ -239,31 +215,24 @@ function applyFilters() {
 
   renderOrders(filtered);
 }
-  
-  );
-    });
-}
 
+/*************** CONFIRM ORDER ***************/
 function confirmOrder(orderId, event) {
   if (!confirm("Confirm payment for this order?")) return;
 
   fetch(SCRIPT_URL, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "confirmOrder",
       orderId: orderId
     })
   })
-
   .then(res => res.json())
   .then(resp => {
     if (resp.success === true) {
       alert("✅ Order confirmed – Payment confirmed");
-  
-      // remove row from UI
-      const btn = event.target;
-      const row = btn.closest("tr");
-      row.remove();
+      event.target.closest("tr").remove();
     } else {
       alert("❌ Failed to confirm order");
     }
@@ -272,9 +241,9 @@ function confirmOrder(orderId, event) {
     console.error(err);
     alert("❌ Server error");
   });
-
 }
 </script>
+
 
 </body>
 </html>
