@@ -157,7 +157,7 @@ function loadOrders() {
           <td>
             <button class="confirm-btn"
               ${status === "CONFIRMED" ? "disabled" : ""}
-              onclick="confirmOrder('${orderId}')">
+              onclick="confirmOrder('${orderId}', event)">
               Confirm
             </button>
           </td>
