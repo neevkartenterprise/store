@@ -22,6 +22,17 @@ h2 {
   border-radius:6px;
   margin-top:15px;
 }
+.filter-bar {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+input[type="text"], input[type="password"], select {
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:4px;
+}
 table {
   width:100%;
   border-collapse:collapse;
@@ -44,9 +55,7 @@ button {
 }
 button:disabled {
   background:#aaa;
-}
-select {
-  padding:6px;
+  cursor:not-allowed;
 }
 </style>
 </head>
@@ -62,8 +71,15 @@ select {
 
 <div id="ordersSection" style="display:none;">
 
-  <div class="card">
-    <label><b>Filter by Status:</b></label>
+  <!-- FILTER BAR -->
+  <div class="card filter-bar">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="🔍 Search Order ID / Customer / Phone"
+      oninput="renderOrders()"
+    >
+
     <select id="statusFilter" onchange="renderOrders()">
       <option value="">All Status</option>
       <option>Order Received</option>
@@ -74,6 +90,7 @@ select {
     </select>
   </div>
 
+  <!-- ORDERS TABLE -->
   <div class="card">
     <table>
       <thead>
@@ -108,29 +125,47 @@ let ORDERS = [];
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
-    loginBox.style.display="none";
-    ordersSection.style.display="block";
+    loginBox.style.display = "none";
+    ordersSection.style.display = "block";
     loadOrders();
-  } else alert("Wrong password");
+  } else {
+    alert("Wrong password");
+  }
 }
 
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
     .then(r => r.json())
-    .then(d => {
-      ORDERS = d;
+    .then(data => {
+      ORDERS = data;
       renderOrders();
     });
 }
 
 function renderOrders() {
-  const filter = statusFilter.value;
-  ordersTable.innerHTML="";
+  const status = statusFilter.value;
+  const search = searchInput.value.toLowerCase();
+
+  ordersTable.innerHTML = "";
 
   ORDERS.forEach(o => {
-    if (filter && o[14] !== filter) return;
+    const orderId = String(o[0]).toLowerCase();
+    const customer = String(o[2]).toLowerCase();
+    const phone = String(o[3]).toLowerCase();
+    const orderStatus = o[14];
 
-    const flow = STATUS_FLOW[o[14]] || [];
+    // Status filter
+    if (status && orderStatus !== status) return;
+
+    // Search filter
+    if (
+      search &&
+      !orderId.includes(search) &&
+      !customer.includes(search) &&
+      !phone.includes(search)
+    ) return;
+
+    const flow = STATUS_FLOW[orderStatus] || [];
 
     ordersTable.innerHTML += `
       <tr>
@@ -138,30 +173,37 @@ function renderOrders() {
         <td>${o[2]}</td>
         <td>${o[3]}</td>
         <td>₹${o[10]}</td>
-        <td>${o[14]}</td>
+        <td>${orderStatus}</td>
         <td>
-          <button ${!flow[1]?"disabled":""}
+          <button ${!flow[1] ? "disabled" : ""}
             onclick="handleAction('${o[0]}','${flow[1]}')">
-            ${flow[0]}
+            ${flow[0] || "—"}
           </button>
         </td>
-      </tr>`;
+      </tr>
+    `;
   });
 }
 
 function handleAction(orderId, action) {
-  if (!action || !confirm("Proceed?")) return;
+  if (!action) return;
+  if (!confirm("Proceed with this action?")) return;
 
   fetch(SCRIPT_URL, {
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body:JSON.stringify({ action, orderId })
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action, orderId })
   })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.success){ alert("✅ Updated"); loadOrders(); }
-    else alert("❌ Failed");
-  });
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("✅ Order updated");
+      loadOrders();
+    } else {
+      alert("❌ Update failed");
+    }
+  })
+  .catch(() => alert("❌ Server error"));
 }
 </script>
 
