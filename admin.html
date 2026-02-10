@@ -1,243 +1,350 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Admin – Order Management</title>
+For customer-details.html page, the drop-down option to "Select Area / Road" is not fetching all the areas listed in Google sheet (i.e., 1mtIdddjpgBsJ8dIh5Xkbdu5Ke371qpiyQ7QHI6hDpbc) in  sheet (Delivery_Charges). The customer must be able to use it without entering any other address details.
 
-<style>
-/* ===== GLOBAL ===== */
-body {
-  font-family: Arial, sans-serif;
-  background: #EDC789;
-  padding: 20px;
-  color: white;
-}
+Please show all the areas to calculate Delivery_charges.
+Below mentioned are the codes for their respective files. Do not update non-related codes. And provide full list of code for respective files.
 
-/* ===== HEADING ===== */
-h2 {
-  background: #EDC789;
-  color: black;
-  padding: 14px;
-  border: 2px solid black;
-  border-radius: 6px;
-  text-align: center;
-}
+File: customer-details.js
 
-/* ===== CARDS ===== */
-.card {
-  background: #EDC789;
-  padding: 15px;
-  border-radius: 6px;
-  border: 2px solid black;
-  margin-top: 15px;
-}
+/**************************************
+ * CONFIG
+ **************************************/
+const DELIVERY_API =
+  "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
-/* ===== FILTER BAR ===== */
-.filter-bar {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+/**************************************
+ * GLOBAL
+ **************************************/
+let deliveryMap = {};
 
-/* ===== INPUTS ===== */
-input[type="text"],
-input[type="password"],
-select {
-  padding: 8px;
-  border: 2px solid black;
-  border-radius: 4px;
-  background: #EDC789;
-  color: black;
-}
+/**************************************
+ * LOAD AREA + DELIVERY CHARGES
+ **************************************/
+async function loadDeliveryCharges() {
+  try {
+    console.log("📡 Fetching delivery areas...");
 
-/* ===== TABLE ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #EDC789;
-  border: 2px solid black;
-}
+    const res = await fetch(DELIVERY_API);
 
-th, td {
-  padding: 10px;
-  border: 1px solid black;
-  text-align: center;
-}
+    if (!res.ok) {
+      throw new Error("HTTP error " + res.status);
+    }
 
-th {
-  background: #EDC789;
-  font-weight: bold;
-}
+    const data = await res.json();
+    console.log("✅ Delivery API data:", data);
 
-/* ===== BUTTONS ===== */
-button {
-  padding: 6px 14px;
-  border: 2px solid black;
-  border-radius: 4px;
-  background: #EDC789;
-  color: black;
-  cursor: pointer;
-  font-weight: bold;
-}
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid API response format");
+    }
 
-button:hover {
-  background: #e3b86f;
-}
+    const areaSelect = document.getElementById("area");
 
-button:disabled {
-  background: #c2b18a;
-  cursor: not-allowed;
-}
-</style>
-</head>
+    // ✅ reset dropdown
+    areaSelect.innerHTML =
+      `<option value="">Select Area / Road *</option>`;
 
-<body>
+    deliveryMap = {};
 
-<h2>🛠 Admin – Order Management</h2>
+    data.forEach(item => {
+      if (!item.area) return;
 
-<!-- LOGIN -->
-<div id="loginBox" class="card">
-  <input type="password" id="adminPassword" placeholder="Admin Password">
-  <button onclick="login()">Login</button>
-</div>
+      const areaName = item.area.trim();
+      const charge = Number(item.deliveryCharge);
 
-<!-- ORDERS -->
-<div id="ordersSection" style="display:none;">
+      if (isNaN(charge)) return;
 
-  <!-- FILTER BAR -->
-  <div class="card filter-bar">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="🔍 Search Order ID / Customer / Phone"
-      oninput="renderOrders()"
-    >
+      deliveryMap[areaName.toLowerCase()] = charge;
 
-    <select id="statusFilter" onchange="renderOrders()">
-      <option value="">All Status</option>
-      <option>Order Received</option>
-      <option>Payment Received</option>
-      <option>Items Picked & Packed</option>
-      <option>Delivering Order</option>
-      <option>Completed Order</option>
-    </select>
-  </div>
+      const opt = document.createElement("option");
+      opt.value = areaName;
+      opt.textContent = areaName;
+      areaSelect.appendChild(opt);
+    });
 
-  <!-- ORDERS TABLE -->
-  <div class="card">
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Phone</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="ordersTable"></tbody>
-    </table>
-  </div>
+    console.log("🗺️ Loaded Areas:", Object.keys(deliveryMap));
 
-</div>
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
-const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
-
-const STATUS_FLOW = {
-  "Order Received": ["Confirm Payment", "confirmPayment"],
-  "Payment Received": ["Pick & Pack", "pickPack"],
-  "Items Picked & Packed": ["Start Delivery", "deliverOrder"],
-  "Delivering Order": ["Complete Order", "completedOrder"],
-  "Completed Order": ["Completed", null]
-};
-
-let ORDERS = [];
-
-function login() {
-  if (adminPassword.value === ADMIN_PASSWORD) {
-    loginBox.style.display = "none";
-    ordersSection.style.display = "block";
-    loadOrders();
-  } else {
-    alert("Wrong password");
+  } catch (err) {
+    console.error("❌ Failed to load delivery areas:", err);
+    alert("❌ Unable to load delivery areas. Please refresh.");
   }
 }
 
-function loadOrders() {
-  fetch(SCRIPT_URL + "?action=getOrders")
-    .then(r => r.json())
-    .then(data => {
-      ORDERS = data;
-      renderOrders();
-    });
+// ✅ MUST be called
+loadDeliveryCharges();
+
+/**************************************
+ * CALCULATE DELIVERY & SAVE DETAILS
+ **************************************/
+function calculateDelivery() {
+  const name = document.getElementById("cust-name").value.trim();
+  const phone = document.getElementById("cust-phone").value.trim();
+  const addr1 = document.getElementById("addr1").value.trim();
+  const addr2 = document.getElementById("addr2").value.trim();
+  const area = document.getElementById("area").value;
+
+  if (!name || !phone || !addr1 || !addr2 || !area) {
+    alert("❌ Please fill all mandatory fields.");
+    return;
+  }
+
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    alert("❌ Please enter a valid 10-digit mobile number.");
+    return;
+  }
+
+  const charge = deliveryMap[area.toLowerCase()];
+
+  if (charge === undefined) {
+    alert("❌ Delivery not available for selected area.");
+    return;
+  }
+
+  document.getElementById("delivery-info").innerHTML =
+    `🚚 Delivery Charges: <b>₹${charge}</b> will be added`;
+
+  localStorage.setItem("deliveryCharge", charge);
+
+  localStorage.setItem(
+    "customerDetails",
+    JSON.stringify({
+      name,
+      phone,
+      addressLine1: addr1,
+      addressLine2: addr2,
+      area,
+      city: "Vadodara",
+      state: "Gujarat",
+      country: "India",
+      fullAddress: `${addr1}, ${addr2}, ${area}, Vadodara, Gujarat, India`
+    })
+  );
+
+  document.getElementById("proceed-btn").style.display = "inline-block";
 }
 
-function renderOrders() {
-  const status = statusFilter.value;
-  const search = searchInput.value.toLowerCase();
-
-  ordersTable.innerHTML = "";
-
-  ORDERS.forEach(o => {
-    const orderId = String(o[0]).toLowerCase();
-    const customer = String(o[2]).toLowerCase();
-    const phone = String(o[3]).toLowerCase();
-    const orderStatus = o[14];
-
-    if (status && orderStatus !== status) return;
-
-    if (
-      search &&
-      !orderId.includes(search) &&
-      !customer.includes(search) &&
-      !phone.includes(search)
-    ) return;
-
-    const flow = STATUS_FLOW[orderStatus] || [];
-
-    ordersTable.innerHTML += `
-      <tr>
-        <td>${o[0]}</td>
-        <td>${o[2]}</td>
-        <td>${o[3]}</td>
-        <td>₹${o[10]}</td>
-        <td>${orderStatus}</td>
-        <td>
-          <button ${!flow[1] ? "disabled" : ""}
-            onclick="handleAction('${o[0]}','${flow[1]}')">
-            ${flow[0] || "—"}
-          </button>
-        </td>
-      </tr>
-    `;
-  });
+/**************************************
+ * NAVIGATION
+ **************************************/
+function goCheckout() {
+  window.location.href = "checkout.html";
 }
 
-function handleAction(orderId, action) {
-  if (!action) return;
-  if (!confirm("Proceed with this action?")) return;
+File: customer-details.html
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action, orderId })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      alert("✅ Order updated");
-      loadOrders();
-    } else {
-      alert("❌ Update failed");
-    }
-  })
-  .catch(() => alert("❌ Server error"));
-}
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Details</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<h1>📍 Customer Details (Vadodara Only)</h1>
+
+<div class="checkout-container">
+
+  <div class="checkout-box">
+
+    <input id="cust-name" placeholder="Full Name *"><br><br>
+    <input id="cust-phone" placeholder="Phone Number *"><br><br>
+    <input id="addr1" placeholder="Address Line 1 *"><br><br>
+    <input id="addr2" placeholder="Address Line 2 *"><br><br>
+    <!-- Area Dropdown -->
+    <select id="area">
+      <option value="">Select Area / Road *</option>
+    </select><br><br>
+    <input value="Vadodara, Gujarat, India" disabled><br><br>
+    
+    <!--
+    <input value="Gujarat" disabled><br><br>
+    <input value="India" disabled><br><br>
+    -->
+    <small>
+      Delivery services are currently available within Vadodara city limits only. We look forward to expanding to other locations soon.
+    </small>
+
+    <hr>
+
+    <!-- Delivery Charge Info -->
+    <h3 id="delivery-info"></h3>
+
+    <!-- Buttons -->
+    <div class="cart-buttons" id="action-buttons">
+      <a href="cart.html">
+        <button>⬅ Back</button>
+      </a>
+    
+      <button id="next-btn" onclick="calculateDelivery()">Next</button>
+    
+      <button id="proceed-btn" style="display:none" onclick="goCheckout()">
+        ✅ Proceed to Checkout
+      </button>
+    </div>
+
+
+  </div>
+
+</div>
+
+<script src="customer-details.js"></script>
 </body>
 </html>
+
+Code for Apps Script:
+
+/*************************************************
+ * CONFIG
+ *************************************************/
+const SPREADSHEET_ID = "1mtIdddjpgBsJ8dIh5Xkbdu5Ke371qpiyQ7QHI6hDpbc";
+const PAYMENT_PROOF_FOLDER_ID = "1dYnXZJVtZXAgmh-CQHx-SUDawS9Jea-A";
+
+/*************************************************
+ * doGet(e)
+ *************************************************/
+function doGet(e) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  // ===== ADMIN: GET ORDERS =====
+  if (e?.parameter?.action === "getOrders") {
+    const sheet = ss.getSheetByName("Orders");
+    const data = sheet.getDataRange().getValues();
+    data.shift();
+    return ContentService
+      .createTextOutput(JSON.stringify(data))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // ===== CUSTOMER: DELIVERY AREAS =====
+  const sheet = ss.getSheetByName("Delivery_Charges");
+  const rows = sheet.getDataRange().getValues();
+  rows.shift(); // remove header
+
+  const result = [];
+
+  rows.forEach(r => {
+    const area = String(r[0] || "").trim(); // Column A
+    const charge = Number(r[6]);            // Column G
+
+    if (area && !isNaN(charge)) {
+      result.push({
+        area: area,
+        deliveryCharge: charge
+      });
+    }
+  });
+
+  return ContentService
+    .createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/*************************************************
+ * doPost(e)
+ *************************************************/
+function doPost(e) {
+  try {
+    if (!e?.postData?.contents) {
+      return jsonOut(false, "Invalid POST");
+    }
+
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName("Orders");
+
+    /*************** ADMIN WORKFLOW ***************/
+    if (
+      data.action === "confirmPayment" ||
+      data.action === "pickPack" ||
+      data.action === "deliverOrder" ||
+      data.action === "completedOrder"
+    ) {
+
+      const rows = sheet.getDataRange().getValues();
+
+      for (let i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]) === String(data.orderId)) {
+
+          let status = "";
+
+          if (data.action === "confirmPayment") status = "Payment Received";
+          if (data.action === "pickPack") status = "Items Picked & Packed";
+          if (data.action === "deliverOrder") status = "Delivering Order";
+          if (data.action === "completedOrder") status = "Completed Order";
+
+          sheet.getRange(i + 1, 15).setValue(status); // O Status
+          return jsonOut(true);
+        }
+      }
+
+      return jsonOut(false, "Order not found");
+    }
+
+    /*************** NEW ORDER ***************/
+    const order = data;
+
+    const deliveryCharge = Number(order.deliveryCharge) || 0;
+    const totalAmount = Number(order.totalAmount) || 0;
+    const orderTotal = totalAmount - deliveryCharge;
+
+    let paymentMode = "";
+    let paymentProofUrl = "";
+
+    if (order.screenshotBase64) {
+      paymentMode = "Screenshot";
+      const folder = DriveApp.getFolderById(PAYMENT_PROOF_FOLDER_ID);
+      const matches = order.screenshotBase64.match(/^data:(.+);base64,(.+)$/);
+      const blob = Utilities.newBlob(
+        Utilities.base64Decode(matches[2]),
+        matches[1],
+        `${order.orderId}_payment`
+      );
+      paymentProofUrl = folder.createFile(blob).getUrl();
+    }
+
+    if (order.utr) paymentMode = "UPI";
+
+    sheet.appendRow([
+      order.orderId,
+      new Date(),
+      order.customer.name,
+      order.customer.phone,
+      order.customer.fullAddress,
+      order.customer.area,
+      order.customer.city,
+      JSON.stringify(order.cart),
+      orderTotal,
+      deliveryCharge,
+      totalAmount,
+      paymentMode,
+      order.utr || "",
+      paymentProofUrl,
+      "Order Received",
+      ""
+    ]);
+
+    sendAdminEmail({ ...order, orderTotal, paymentProofUrl });
+
+    return jsonOut(true);
+
+  } catch (err) {
+    return jsonOut(false, err.message);
+  }
+}
+
+function jsonOut(success, error = "") {
+  return ContentService.createTextOutput(
+    JSON.stringify({ success, error })
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+/*************************************************
+ * ADMIN EMAIL
+ *************************************************/
+function sendAdminEmail(order) {
+  MailApp.sendEmail(
+    "amitjadav@gmail.com,neevkartenterprise@gmail.com",
+    `🛒 New Order – ${order.orderId}`,
+    `Order ID: ${order.orderId}\nAmount: ₹${order.totalAmount}`
+  );
+}
+
