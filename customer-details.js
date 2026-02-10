@@ -2,7 +2,7 @@
  * CONFIG
  **************************************/
 const DELIVERY_API =
-  "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
+  "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec?action=getDeliveryAreas";
 
 /**************************************
  * GLOBAL
@@ -16,7 +16,7 @@ async function loadDeliveryCharges() {
   try {
     console.log("📡 Fetching delivery areas...");
 
-    const res = await fetch(DELIVERY_API);
+    const res = await fetch(DELIVERY_API, { cache: "no-store" });
 
     if (!res.ok) {
       throw new Error("HTTP error " + res.status);
@@ -31,7 +31,7 @@ async function loadDeliveryCharges() {
 
     const areaSelect = document.getElementById("area");
 
-    // ✅ reset dropdown
+    // reset dropdown
     areaSelect.innerHTML =
       `<option value="">Select Area / Road *</option>`;
 
@@ -53,7 +53,7 @@ async function loadDeliveryCharges() {
       areaSelect.appendChild(opt);
     });
 
-    console.log("🗺️ Loaded Areas:", Object.keys(deliveryMap));
+    console.log("🗺️ Loaded Areas:", Object.keys(deliveryMap).length);
 
   } catch (err) {
     console.error("❌ Failed to load delivery areas:", err);
@@ -61,7 +61,7 @@ async function loadDeliveryCharges() {
   }
 }
 
-// ✅ MUST be called
+// MUST be called immediately (no dependency on inputs)
 loadDeliveryCharges();
 
 /**************************************
