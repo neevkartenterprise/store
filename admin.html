@@ -2,41 +2,94 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Admin Page - Order/Payment Confirmation Page</title>
+<title>Admin – Order Management</title>
 
 <style>
-body { font-family: Arial; background:#f6f8fb; padding:20px; }
-table { width:100%; border-collapse:collapse; background:#fff; }
-th,td { border:1px solid #ddd; padding:10px; text-align:center; }
-th { background:#2d89ef; color:#fff; }
-button { padding:6px 10px; border:none; border-radius:4px; cursor:pointer; }
-button:disabled { background:#aaa; }
+body {
+  font-family: Arial;
+  background:#f4f6fb;
+  padding:20px;
+}
+h2 {
+  background:#2d89ef;
+  color:#fff;
+  padding:12px;
+  border-radius:6px;
+}
+.card {
+  background:#fff;
+  padding:15px;
+  border-radius:6px;
+  margin-top:15px;
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+th, td {
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:center;
+}
+th {
+  background:#eef3ff;
+}
+button {
+  padding:6px 12px;
+  border:none;
+  border-radius:4px;
+  background:#2d89ef;
+  color:#fff;
+  cursor:pointer;
+}
+button:disabled {
+  background:#aaa;
+}
+select {
+  padding:6px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>Admin Page - Order/Payment Confirmation Page</h2>
+<h2>🛠 Admin – Order Management</h2>
 
-<div id="loginBox">
+<div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
   <button onclick="login()">Login</button>
 </div>
 
 <div id="ordersSection" style="display:none;">
-  <table>
-    <thead>
-      <tr>
-        <th>Order ID</th>
-        <th>Customer</th>
-        <th>Phone</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="ordersTable"></tbody>
-  </table>
+
+  <div class="card">
+    <label><b>Filter by Status:</b></label>
+    <select id="statusFilter" onchange="renderOrders()">
+      <option value="">All Status</option>
+      <option>Order Received</option>
+      <option>Payment Received</option>
+      <option>Items Picked & Packed</option>
+      <option>Delivering Order</option>
+      <option>Completed Order</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTable"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <script>
@@ -45,11 +98,13 @@ const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 
 const STATUS_FLOW = {
   "Order Received": ["Confirm Payment", "confirmPayment"],
-  "Payment Received": ["Pick & Pack Items", "pickPack"],
-  "Items Picked & Packed": ["Deliver Order", "deliverOrder"],
-  "Delivering Order": ["Order Completed", "completedOrder"],
+  "Payment Received": ["Pick & Pack", "pickPack"],
+  "Items Picked & Packed": ["Start Delivery", "deliverOrder"],
+  "Delivering Order": ["Complete Order", "completedOrder"],
   "Completed Order": ["Completed", null]
 };
+
+let ORDERS = [];
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
@@ -62,13 +117,21 @@ function login() {
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
     .then(r => r.json())
-    .then(renderOrders);
+    .then(d => {
+      ORDERS = d;
+      renderOrders();
+    });
 }
 
-function renderOrders(data) {
+function renderOrders() {
+  const filter = statusFilter.value;
   ordersTable.innerHTML="";
-  data.forEach(o => {
+
+  ORDERS.forEach(o => {
+    if (filter && o[14] !== filter) return;
+
     const flow = STATUS_FLOW[o[14]] || [];
+
     ordersTable.innerHTML += `
       <tr>
         <td>${o[0]}</td>
@@ -79,7 +142,7 @@ function renderOrders(data) {
         <td>
           <button ${!flow[1]?"disabled":""}
             onclick="handleAction('${o[0]}','${flow[1]}')">
-            ${flow[0] || "—"}
+            ${flow[0]}
           </button>
         </td>
       </tr>`;
@@ -87,26 +150,17 @@ function renderOrders(data) {
 }
 
 function handleAction(orderId, action) {
-  if (!action) return;
-  if (!confirm("Proceed?")) return;
+  if (!action || !confirm("Proceed?")) return;
 
   fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify({ action, orderId })
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify({ action, orderId })
   })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      alert("✅ Updated");
-      loadOrders();
-    } else alert("❌ Failed");
-  })
-  .catch(err => {
-    console.error(err);
-    alert("❌ Server error");
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.success){ alert("✅ Updated"); loadOrders(); }
+    else alert("❌ Failed");
   });
 }
 </script>
