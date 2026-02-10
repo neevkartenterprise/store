@@ -5,57 +5,89 @@
 <title>Admin – Order Management</title>
 
 <style>
+/* ===== GLOBAL ===== */
 body {
-  font-family: Arial;
-  background:#EDC789;
-  padding:20px;
+  font-family: Arial, sans-serif;
+  background: #EDC789;
+  padding: 20px;
+  color: black;
 }
+
+/* ===== HEADING ===== */
 h2 {
-  background:#EDC789;
-  color:black;
-  padding:12px;
-  border-radius:6px;
+  background: #EDC789;
+  color: black;
+  padding: 14px;
+  border: 2px solid black;
+  border-radius: 6px;
+  text-align: center;
 }
+
+/* ===== CARDS ===== */
 .card {
-  background:#fff;
-  padding:15px;
-  border-radius:6px;
-  margin-top:15px;
+  background: #EDC789;
+  padding: 15px;
+  border-radius: 6px;
+  border: 2px solid black;
+  margin-top: 15px;
 }
+
+/* ===== FILTER BAR ===== */
 .filter-bar {
-  display:flex;
-  gap:12px;
-  align-items:center;
-  flex-wrap:wrap;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
-input[type="text"], input[type="password"], select {
-  padding:8px;
-  border:1px solid #ccc;
-  border-radius:4px;
+
+/* ===== INPUTS ===== */
+input[type="text"],
+input[type="password"],
+select {
+  padding: 8px;
+  border: 2px solid black;
+  border-radius: 4px;
+  background: #EDC789;
+  color: black;
 }
+
+/* ===== TABLE ===== */
 table {
-  width:100%;
-  border-collapse:collapse;
+  width: 100%;
+  border-collapse: collapse;
+  background: #EDC789;
+  border: 2px solid black;
 }
+
 th, td {
-  padding:10px;
-  border-bottom:1px solid #ddd;
-  text-align:center;
+  padding: 10px;
+  border: 1px solid black;
+  text-align: center;
 }
+
 th {
-  background:#eef3ff;
+  background: #EDC789;
+  font-weight: bold;
 }
+
+/* ===== BUTTONS ===== */
 button {
-  padding:6px 12px;
-  border:none;
-  border-radius:4px;
-  background:#EDC789;
-  color:black;
-  cursor:pointer;
+  padding: 6px 14px;
+  border: 2px solid black;
+  border-radius: 4px;
+  background: #EDC789;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
 }
+
+button:hover {
+  background: #e3b86f;
+}
+
 button:disabled {
-  background:#aaa;
-  cursor:not-allowed;
+  background: #c2b18a;
+  cursor: not-allowed;
 }
 </style>
 </head>
@@ -64,11 +96,13 @@ button:disabled {
 
 <h2>🛠 Admin – Order Management</h2>
 
+<!-- LOGIN -->
 <div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
   <button onclick="login()">Login</button>
 </div>
 
+<!-- ORDERS -->
 <div id="ordersSection" style="display:none;">
 
   <!-- FILTER BAR -->
@@ -154,10 +188,8 @@ function renderOrders() {
     const phone = String(o[3]).toLowerCase();
     const orderStatus = o[14];
 
-    // Status filter
     if (status && orderStatus !== status) return;
 
-    // Search filter
     if (
       search &&
       !orderId.includes(search) &&
