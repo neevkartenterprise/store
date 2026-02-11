@@ -131,8 +131,10 @@ button:disabled {
           <th>Customer</th>
           <th>Phone</th>
           <th>Total</th>
+          <th>Payment Reference</th>
           <th>Status</th>
           <th>Action</th>
+          <th>Cancel Order</th>
         </tr>
       </thead>
       <tbody id="ordersTable"></tbody>
@@ -185,6 +187,7 @@ function renderOrders() {
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
     const orderStatus = o[14];
+    const paymentRef = o[12]; // Column M
 
     if (status && orderStatus !== status) return;
 
@@ -203,11 +206,23 @@ function renderOrders() {
         <td>${o[2]}</td>
         <td>${o[3]}</td>
         <td>₹${o[10]}</td>
+        <td>
+          ${
+            paymentRef && paymentRef.startsWith("http")
+              ? `<a href="${paymentRef}" target="_blank">View</a>`
+              : paymentRef || "-"
+          }
+        </td>
         <td>${orderStatus}</td>
         <td>
           <button ${!flow[1] ? "disabled" : ""}
             onclick="handleAction('${o[0]}','${flow[1]}')">
             ${flow[0] || "—"}
+          </button>
+        </td>
+        <td>
+          <button onclick="cancelOrder('${o[0]}')">
+            ❌ Cancel
           </button>
         </td>
       </tr>
@@ -234,6 +249,25 @@ function handleAction(orderId, action) {
     }
   })
   .catch(() => alert("❌ Server error"));
+}
+
+function cancelOrder(orderId) {
+  if (!confirm("Are you sure you want to cancel this order?")) return;
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "cancelOrder", orderId })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("❌ Order Cancelled");
+      loadOrders();
+    } else {
+      alert("Cancel failed");
+    }
+  });
 }
 </script>
 
