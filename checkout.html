@@ -28,7 +28,6 @@
       Total Amount: ₹<span id="final-total"></span>
     </h3>
 
-    <!-- Buttons -->
     <a href="index.html">
       <button>🏠 Add more items</button>
     </a>
@@ -41,23 +40,18 @@
   <!-- ================= RIGHT: PAYMENT ================= -->
   <div class="checkout-box">
 
-    <!-- Payment Steps -->
     <h3>📝 Payment Steps</h3>
     <p>1. Pay the exact amount using QR OR Payment Apps.</p>
-    <p>2. Enter your UPI Transaction ID (UTR) to confirm the payment.</p>
+    <p>2. Enter your UPI Transaction ID (UTR).</p>
     <p>3. Click Submit Order to confirm.</p>
 
     <hr>
 
-    <!-- QR PAYMENT -->
     <h2>📲 Pay Using UPI QR</h2>
     <p>Scan the QR code below and pay the exact amount.</p>
 
     <img id="qr-image" width="220" alt="UPI QR Code">
 
-    <!-- <p id="qr-status" style="font-size:14px;color:gray;">Loading QR Code...</p> -->
-
-    <!-- APP PAYMENT -->
     <h3>📲 Pay Directly Using Payment Apps</h3>
 
     <a id="upi-pay-link" target="_blank">
@@ -68,27 +62,14 @@
 
     <hr>
 
-    <!-- PAYMENT DETAILS 
-    <h3>Enter Payment Details</h3>
-
-    <input id="cust-name" placeholder="Your Name" readonly><br><br>
-    <input id="cust-phone" placeholder="Phone Number" readonly><br><br>
-    -->
-
-    <h3>Payment Proof</h3>
+    <h3>Enter UPI Transaction ID (UTR)</h3>
     <small>
-      Enter your UPI Transaction ID (UTR) to confirm the payment.
+      After completing payment, enter your UTR number below.
     </small>
 
     <br><br>
 
-    <!-- Option 1 -->
     <input id="utr" placeholder="Enter UPI Transaction ID / UTR"><br><br>
-
-    <!--<p><b>OR</b></p>-->
-
-    <!-- Option 2 -->
-    <!--<input type="file" id="payment-proof" accept="image/*"><br><br>-->
 
     <button id="submit-btn" onclick="submitOrder()">
       ✅ Submit Order
