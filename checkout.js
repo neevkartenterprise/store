@@ -1,5 +1,6 @@
 // ================== ORDER SETUP ==================
 const orderId = "ORD" + Date.now();
+
 const API_URL =
   "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
@@ -57,36 +58,31 @@ document.getElementById("qr-image").src =
 
 // ================== SUBMIT ORDER ==================
 async function submitOrder() {
-  const utrValue = document.getElementById("utr").value.trim();
-  const file = document.getElementById("payment-proof").files[0];
 
-  if (!utrValue && !file) {
+  const utrValue = document.getElementById("utr").value.trim();
+
+  if (!utrValue) {
     document.getElementById("status").innerText =
-      "❌ Please enter UTR OR upload payment screenshot.";
+      "❌ Please enter UPI Transaction ID (UTR).";
     return;
   }
 
   const customerDetails = JSON.parse(localStorage.getItem("customerDetails"));
+
   if (!customerDetails) {
     document.getElementById("status").innerText =
       "❌ Customer details missing. Please restart checkout.";
     return;
   }
 
-  let screenshotBase64 = "";
-  if (file) {
-    screenshotBase64 = await toBase64(file);
-  }
-
   const orderData = {
-    orderId,                    // ✅ FIXED
+    orderId,
     customer: customerDetails,
     cart,
-    orderTotal: itemsTotal,   // ✅ NEW (without delivery)
+    orderTotal: itemsTotal,
     deliveryCharge,
     totalAmount: finalPayable,
-    utr: utrValue,
-    screenshotBase64            // ✅ FIXED
+    utr: utrValue
   };
 
   document.getElementById("status").innerText = "⏳ Submitting order...";
@@ -94,12 +90,14 @@ async function submitOrder() {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(orderData)
     });
 
     const result = await response.json();
 
     if (result.success === true) {
+
       document.getElementById("status").innerHTML =
         "🎉 Order Submitted Successfully!";
 
@@ -113,6 +111,7 @@ async function submitOrder() {
       setTimeout(() => {
         window.location.href = "index.html";
       }, 3000);
+
     } else {
       throw new Error(result.error || "Unknown error");
     }
@@ -122,16 +121,4 @@ async function submitOrder() {
     document.getElementById("status").innerText =
       "❌ Failed to submit order. Please try again.";
   }
-}
-
-
-
-// ================== FILE TO BASE64 ==================
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }
