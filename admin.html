@@ -201,7 +201,7 @@ function renderOrders() {
         </td>
         <td>
           <button onclick="cancelOrder('${o[0]}')"
-            ${orderStatus === "Cancelled Order" ? "disabled" : ""}>
+            ${(orderStatus === "Cancelled Order" || orderStatus === "Completed Order") ? "disabled" : ""}>
             ❌ Cancel
           </button>
         </td>
