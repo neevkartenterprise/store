@@ -174,7 +174,13 @@ function renderOrders() {
     const orderStatus = o[14];
     const paymentRef = o[12] || "-"; // ✅ UTR Column
 
-    if (status && orderStatus !== status) return;
+    if (status) {
+      if (status === "Cancelled Order") {
+        if (!orderStatus.startsWith("Cancelled Order")) return;
+      } else {
+        if (orderStatus !== status) return;
+      }
+    }
 
     if (
       search &&
