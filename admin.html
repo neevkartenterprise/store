@@ -87,6 +87,30 @@ button:disabled {
 
 <div id="ordersSection" style="display:none;">
 
+  <!-- 📊 DASHBOARD SUMMARY -->
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
+  
+    <div>
+      <strong>Active Orders:</strong>
+      <span id="activeCount" style="background:#EDC789;padding:4px 10px;border-radius:20px;">
+        0
+      </span>
+    </div>
+  
+    <div>
+      <strong>Total Revenue:</strong>
+      ₹<span id="totalRevenue">0</span>
+    </div>
+  
+    <div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="toggleArchived" onchange="renderOrders()">
+        Show Archived Orders
+      </label>
+    </div>
+  
+  </div>
+
   <div class="card filter-bar">
     <input
       type="text"
@@ -164,17 +188,22 @@ function loadOrders() {
 }
 
 function renderOrders() {
+
   const status = statusFilter.value;
   const search = searchInput.value.toLowerCase();
   const fromDate = dateFrom.value;
   const toDate = dateTo.value;
+  const showArchived = toggleArchived.checked;
 
   ordersTable.innerHTML = "";
+
+  let activeCount = 0;
+  let totalRevenue = 0;
 
   ORDERS.forEach(o => {
 
     const orderId = String(o[0]).toLowerCase();
-    const orderDateRaw = o[1];           // ✅ Column 2 (Date)
+    const orderDateRaw = o[1];
     const orderDate = new Date(orderDateRaw);
     const formattedDate = orderDate.toLocaleDateString("en-IN");
 
@@ -182,16 +211,18 @@ function renderOrders() {
     const phone = String(o[3]).toLowerCase();
     const orderStatus = o[14];
     const paymentRef = o[12] || "-";
-    // ❌ Hide Cancelled and Completed Orders
-    if (
-      orderStatus.startsWith("Cancelled Order") ||
-      orderStatus === "Completed Order"
-    ) return;
-    
+    const totalAmount = Number(o[10]) || 0;
 
-    // ✅ ADVANCED STATUS FILTER LOGIC
-    // If a specific status is selected
+    const isArchived =
+      orderStatus.startsWith("Cancelled Order") ||
+      orderStatus === "Completed Order";
+
+    // 🚀 Default: hide archived unless toggle ON
+    if (!showArchived && isArchived) return;
+
+    // ✅ STATUS FILTER
     if (status) {
+
       if (status === "Cancelled Order") {
         if (!orderStatus.startsWith("Cancelled Order")) return;
       }
@@ -201,13 +232,6 @@ function renderOrders() {
       else {
         if (orderStatus !== status) return;
       }
-    } else {
-      // 🚀 Default View (no filter selected)
-      // Hide Cancelled & Completed automatically
-      if (
-        orderStatus.startsWith("Cancelled Order") ||
-        orderStatus === "Completed Order"
-      ) return;
     }
 
     // ✅ SEARCH FILTER
@@ -220,14 +244,21 @@ function renderOrders() {
 
     // ✅ DATE FILTER
     if (fromDate) {
-      const from = new Date(fromDate);
-      if (orderDate < from) return;
+      if (orderDate < new Date(fromDate)) return;
     }
 
     if (toDate) {
       const to = new Date(toDate);
-      to.setHours(23,59,59,999); // include full day
+      to.setHours(23,59,59,999);
       if (orderDate > to) return;
+    }
+
+    // 📊 Count active (non archived)
+    if (!isArchived) activeCount++;
+
+    // 💰 Revenue (only completed orders)
+    if (orderStatus === "Completed Order") {
+      totalRevenue += totalAmount;
     }
 
     const flow = STATUS_FLOW[orderStatus] || [];
@@ -235,7 +266,7 @@ function renderOrders() {
     ordersTable.innerHTML += `
       <tr>
         <td>${o[0]}</td>
-        <td>${formattedDate}</td>   <!-- ✅ Show Date -->
+        <td>${formattedDate}</td>
         <td>${o[2]}</td>
         <td>${o[3]}</td>
         <td>₹${o[10]}</td>
@@ -249,14 +280,22 @@ function renderOrders() {
         </td>
         <td>
           <button onclick="cancelOrder('${o[0]}')"
-            ${(orderStatus.startsWith("Cancelled Order") || orderStatus === "Completed Order") ? "disabled" : ""}>
+            ${(isArchived) ? "disabled" : ""}>
             ❌ Cancel
           </button>
         </td>
       </tr>
     `;
   });
+
+  // 📊 Update Dashboard
+  activeCountEl = document.getElementById("activeCount");
+  revenueEl = document.getElementById("totalRevenue");
+
+  if (activeCountEl) activeCountEl.innerText = activeCount;
+  if (revenueEl) revenueEl.innerText = totalRevenue.toLocaleString("en-IN");
 }
+
 
 
 function handleAction(orderId, action) {
