@@ -104,6 +104,8 @@ button:disabled {
       <option>Completed Order</option>
       <option>Cancelled Order</option> <!-- ✅ Added -->
     </select>
+    <input type="date" id="dateFrom" onchange="renderOrders()">
+    <input type="date" id="dateTo" onchange="renderOrders()">
   </div>
 
   <div class="card">
@@ -111,6 +113,7 @@ button:disabled {
       <thead>
         <tr>
           <th>Order ID</th>
+          <th>Order Date</th>   <!-- ✅ Added -->
           <th>Customer</th>
           <th>Phone</th>
           <th>Total</th>
@@ -163,17 +166,24 @@ function loadOrders() {
 function renderOrders() {
   const status = statusFilter.value;
   const search = searchInput.value.toLowerCase();
+  const fromDate = dateFrom.value;
+  const toDate = dateTo.value;
 
   ordersTable.innerHTML = "";
 
   ORDERS.forEach(o => {
 
     const orderId = String(o[0]).toLowerCase();
+    const orderDateRaw = o[1];           // ✅ Column 2 (Date)
+    const orderDate = new Date(orderDateRaw);
+    const formattedDate = orderDate.toLocaleDateString("en-IN");
+
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
     const orderStatus = o[14];
-    const paymentRef = o[12] || "-"; // ✅ UTR Column
+    const paymentRef = o[12] || "-";
 
+    // ✅ STATUS FILTER
     if (status) {
       if (status === "Cancelled Order") {
         if (!orderStatus.startsWith("Cancelled Order")) return;
@@ -182,6 +192,7 @@ function renderOrders() {
       }
     }
 
+    // ✅ SEARCH FILTER
     if (
       search &&
       !orderId.includes(search) &&
@@ -189,11 +200,24 @@ function renderOrders() {
       !phone.includes(search)
     ) return;
 
+    // ✅ DATE FILTER
+    if (fromDate) {
+      const from = new Date(fromDate);
+      if (orderDate < from) return;
+    }
+
+    if (toDate) {
+      const to = new Date(toDate);
+      to.setHours(23,59,59,999); // include full day
+      if (orderDate > to) return;
+    }
+
     const flow = STATUS_FLOW[orderStatus] || [];
 
     ordersTable.innerHTML += `
       <tr>
         <td>${o[0]}</td>
+        <td>${formattedDate}</td>   <!-- ✅ Show Date -->
         <td>${o[2]}</td>
         <td>${o[3]}</td>
         <td>₹${o[10]}</td>
@@ -215,6 +239,7 @@ function renderOrders() {
     `;
   });
 }
+
 
 function handleAction(orderId, action) {
   if (!action) return;
