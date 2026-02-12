@@ -2,7 +2,7 @@
  * CONFIG
  **************************************/
 const DELIVERY_API =
-  "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec?action=getDeliveryAreas";
+  "https://script.google.com/macros/s/AKfycbz4c6juBBbJWCqr7BO9ov5Y-gaypLwZSzywnfKeZiTh7E4UtpXySo5w-AMnrT4FeQEa/exec?action=getDeliveryAreas";
 
 /**************************************
  * GLOBAL
