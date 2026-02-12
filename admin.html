@@ -182,14 +182,32 @@ function renderOrders() {
     const phone = String(o[3]).toLowerCase();
     const orderStatus = o[14];
     const paymentRef = o[12] || "-";
+    // ❌ Hide Cancelled and Completed Orders
+    if (
+      orderStatus.startsWith("Cancelled Order") ||
+      orderStatus === "Completed Order"
+    ) return;
+    
 
-    // ✅ STATUS FILTER
+    // ✅ ADVANCED STATUS FILTER LOGIC
+    // If a specific status is selected
     if (status) {
       if (status === "Cancelled Order") {
         if (!orderStatus.startsWith("Cancelled Order")) return;
-      } else {
+      }
+      else if (status === "Completed Order") {
+        if (orderStatus !== "Completed Order") return;
+      }
+      else {
         if (orderStatus !== status) return;
       }
+    } else {
+      // 🚀 Default View (no filter selected)
+      // Hide Cancelled & Completed automatically
+      if (
+        orderStatus.startsWith("Cancelled Order") ||
+        orderStatus === "Completed Order"
+      ) return;
     }
 
     // ✅ SEARCH FILTER
