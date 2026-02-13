@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <title>Admin – Order Management</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-/* YOUR EXISTING CSS — UNTOUCHED */
+/* (YOUR EXISTING CSS — UNTOUCHED) */
 body {
   font-family: Arial, sans-serif;
   background: #ffffff;
@@ -89,40 +87,30 @@ button:disabled {
 
 <div id="ordersSection" style="display:none;">
 
-  <!-- 📊 DASHBOARD -->
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
-
+  <!-- 📊 DASHBOARD SUMMARY -->
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
+  
     <div>
       <strong>Active Orders:</strong>
       <span id="activeCount" style="background:#EDC789;padding:4px 10px;border-radius:20px;">
         0
       </span>
     </div>
-
+  
     <div>
-      <strong>Daily Revenue:</strong>
-      ₹<span id="dailyRevenue">0</span>
+      <strong>Total Revenue:</strong>
+      ₹<span id="totalRevenue">0</span>
     </div>
-
-    <div>
-      <button onclick="downloadCSV()">⬇ Download CSV</button>
-    </div>
-
+  
     <div>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
         <input type="checkbox" id="toggleArchived" onchange="renderOrders()">
         Show Archived Orders
       </label>
     </div>
-
+  
   </div>
 
-  <!-- 📈 CHART -->
-  <div class="card">
-    <canvas id="ordersChart" height="100"></canvas>
-  </div>
-
-  <!-- FILTERS -->
   <div class="card filter-bar">
     <input
       type="text"
@@ -130,6 +118,7 @@ button:disabled {
       placeholder="🔍 Search Order ID / Customer / Phone"
       oninput="renderOrders()"
     >
+
     <select id="statusFilter" onchange="renderOrders()">
       <option value="">All Status</option>
       <option>Order Received</option>
@@ -137,21 +126,25 @@ button:disabled {
       <option>Items Picked & Packed</option>
       <option>Delivering Order</option>
       <option>Completed Order</option>
-      <option>Cancelled Order</option>
+      <option>Cancelled Order</option> <!-- ✅ Added -->
     </select>
+    <input type="date" id="dateFrom" onchange="renderOrders()">
+    <input type="date" id="dateTo" onchange="renderOrders()">
   </div>
 
-  <!-- TABLE -->
   <div class="card">
     <table>
       <thead>
         <tr>
           <th>Order ID</th>
-          <th>Date</th>
+          <th>Order Date</th>   <!-- ✅ Added -->
           <th>Customer</th>
           <th>Phone</th>
           <th>Total</th>
+          <th>Payment Reference</th>
           <th>Status</th>
+          <th>Action</th>
+          <th>Cancel Order</th>
         </tr>
       </thead>
       <tbody id="ordersTable"></tbody>
@@ -164,15 +157,22 @@ button:disabled {
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 
+const STATUS_FLOW = {
+  "Order Received": ["Confirm Payment", "confirmPayment"],
+  "Payment Received": ["Pick & Pack", "pickPack"],
+  "Items Picked & Packed": ["Start Delivery", "deliverOrder"],
+  "Delivering Order": ["Complete Order", "completedOrder"],
+  "Completed Order": ["Completed", null],
+  "Cancelled Order": ["Cancelled", null]   // ✅ Added
+};
+
 let ORDERS = [];
-let chartInstance = null;
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
     loginBox.style.display = "none";
     ordersSection.style.display = "block";
     loadOrders();
-    setInterval(loadOrders, 30000); // 🔄 Auto refresh every 30 sec
   } else {
     alert("Wrong password");
   }
@@ -184,124 +184,157 @@ function loadOrders() {
     .then(data => {
       ORDERS = data;
       renderOrders();
-      updateDashboard();
-      renderChart();
     });
 }
 
 function renderOrders() {
 
-  const showArchived = toggleArchived.checked;
-  const search = searchInput.value.toLowerCase();
   const status = statusFilter.value;
+  const search = searchInput.value.toLowerCase();
+  const fromDate = dateFrom.value;
+  const toDate = dateTo.value;
+  const showArchived = toggleArchived.checked;
 
   ordersTable.innerHTML = "";
+
   let activeCount = 0;
+  let totalRevenue = 0;
 
   ORDERS.forEach(o => {
 
     const orderId = String(o[0]).toLowerCase();
-    const date = new Date(o[1]).toLocaleDateString("en-IN");
+    const orderDateRaw = o[1];
+    const orderDate = new Date(orderDateRaw);
+    const formattedDate = orderDate.toLocaleDateString("en-IN");
+
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
-    const total = o[10];
     const orderStatus = o[14];
+    const paymentRef = o[12] || "-";
+    const totalAmount = Number(o[10]) || 0;
 
     const isArchived =
-      orderStatus === "Completed Order" ||
-      orderStatus.startsWith("Cancelled");
+      orderStatus.startsWith("Cancelled Order") ||
+      orderStatus === "Completed Order";
 
+    // 🚀 Default: hide archived unless toggle ON
     if (!showArchived && isArchived) return;
-    if (status && orderStatus !== status) return;
-    if (search &&
+
+    // ✅ STATUS FILTER
+    if (status) {
+
+      if (status === "Cancelled Order") {
+        if (!orderStatus.startsWith("Cancelled Order")) return;
+      }
+      else if (status === "Completed Order") {
+        if (orderStatus !== "Completed Order") return;
+      }
+      else {
+        if (orderStatus !== status) return;
+      }
+    }
+
+    // ✅ SEARCH FILTER
+    if (
+      search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
       !phone.includes(search)
     ) return;
 
+    // ✅ DATE FILTER
+    if (fromDate) {
+      if (orderDate < new Date(fromDate)) return;
+    }
+
+    if (toDate) {
+      const to = new Date(toDate);
+      to.setHours(23,59,59,999);
+      if (orderDate > to) return;
+    }
+
+    // 📊 Count active (non archived)
     if (!isArchived) activeCount++;
+
+    // 💰 Revenue (only completed orders)
+    if (orderStatus === "Completed Order") {
+      totalRevenue += totalAmount;
+    }
+
+    const flow = STATUS_FLOW[orderStatus] || [];
 
     ordersTable.innerHTML += `
       <tr>
         <td>${o[0]}</td>
-        <td>${date}</td>
+        <td>${formattedDate}</td>
         <td>${o[2]}</td>
         <td>${o[3]}</td>
-        <td>₹${total}</td>
+        <td>₹${o[10]}</td>
+        <td>${paymentRef}</td>
         <td>${orderStatus}</td>
+        <td>
+          <button ${!flow[1] ? "disabled" : ""}
+            onclick="handleAction('${o[0]}','${flow[1]}')">
+            ${flow[0] || "—"}
+          </button>
+        </td>
+        <td>
+          <button onclick="cancelOrder('${o[0]}')"
+            ${(isArchived) ? "disabled" : ""}>
+            ❌ Cancel
+          </button>
+        </td>
       </tr>
     `;
   });
 
-  document.getElementById("activeCount").innerText = activeCount;
+  // 📊 Update Dashboard
+  activeCountEl = document.getElementById("activeCount");
+  revenueEl = document.getElementById("totalRevenue");
+
+  if (activeCountEl) activeCountEl.innerText = activeCount;
+  if (revenueEl) revenueEl.innerText = totalRevenue.toLocaleString("en-IN");
 }
 
-function updateDashboard() {
-  const today = new Date().toLocaleDateString("en-IN");
 
-  let dailyRevenue = 0;
 
-  ORDERS.forEach(o => {
-    const date = new Date(o[1]).toLocaleDateString("en-IN");
-    if (date === today && o[14] === "Completed Order") {
-      dailyRevenue += Number(o[10]) || 0;
-    }
-  });
+function handleAction(orderId, action) {
+  if (!action) return;
+  if (!confirm("Proceed with this action?")) return;
 
-  document.getElementById("dailyRevenue").innerText =
-    dailyRevenue.toLocaleString("en-IN");
-}
-
-function renderChart() {
-
-  const grouped = {};
-
-  ORDERS.forEach(o => {
-    const date = new Date(o[1]).toLocaleDateString("en-IN");
-    if (!grouped[date]) grouped[date] = 0;
-    grouped[date]++;
-  });
-
-  const labels = Object.keys(grouped);
-  const data = Object.values(grouped);
-
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(document.getElementById("ordersChart"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Orders per Day",
-        data: data,
-        backgroundColor: "#EDC789"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      }
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action, orderId })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("✅ Order updated");
+      loadOrders();
+    } else {
+      alert("❌ Update failed");
     }
   });
 }
 
-function downloadCSV() {
-  let csv = "Order ID,Date,Customer,Phone,Total,Status\n";
+function cancelOrder(orderId) {
+  if (!confirm("Are you sure you want to cancel this order?")) return;
 
-  ORDERS.forEach(o => {
-    csv += `${o[0]},${o[1]},${o[2]},${o[3]},${o[10]},${o[14]}\n`;
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "cancelOrder", orderId })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("❌ Order Cancelled");
+      loadOrders();
+    } else {
+      alert("Cancel failed");
+    }
   });
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "orders.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
 }
 </script>
 
