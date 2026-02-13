@@ -113,9 +113,7 @@ button:disabled {
       placeholder="🔍 Search Order ID / Customer / Phone"
       oninput="renderOrders()"
     >
-
-    <button onclick="downloadCSV()">⬇ Download CSV</button>
-    
+   
     <select id="statusFilter" onchange="renderOrders()">
       <option value="">All Status</option>
       <option>Order Received</option>
@@ -127,6 +125,8 @@ button:disabled {
     </select>
     <input type="date" id="dateFrom" onchange="renderOrders()">
     <input type="date" id="dateTo" onchange="renderOrders()">
+
+    <button onclick="downloadCSV()">⬇ Download CSV</button>
   </div>
 
   <div class="card">
