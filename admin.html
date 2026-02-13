@@ -98,11 +98,6 @@ button:disabled {
     </div>
   
     <div>
-      <strong>Total Revenue:</strong>
-      ₹<span id="totalRevenue">0</span>
-    </div>
-  
-    <div>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
         <input type="checkbox" id="toggleArchived" onchange="renderOrders()">
         Show Archived Orders
@@ -119,6 +114,8 @@ button:disabled {
       oninput="renderOrders()"
     >
 
+    <button onclick="downloadCSV()">⬇ Download CSV</button>
+    
     <select id="statusFilter" onchange="renderOrders()">
       <option value="">All Status</option>
       <option>Order Received</option>
@@ -173,6 +170,8 @@ function login() {
     loginBox.style.display = "none";
     ordersSection.style.display = "block";
     loadOrders();
+    // 🔄 Auto Refresh
+    setInterval(loadOrders, 30000);
   } else {
     alert("Wrong password");
   }
@@ -296,6 +295,91 @@ function renderOrders() {
   if (revenueEl) revenueEl.innerText = totalRevenue.toLocaleString("en-IN");
 }
 
+function downloadCSV() {
+
+  const rows = [];
+  const headers = [
+    "Order ID",
+    "Order Date",
+    "Customer",
+    "Phone",
+    "Total",
+    "Payment Reference",
+    "Status"
+  ];
+
+  rows.push(headers);
+
+  const status = statusFilter.value;
+  const search = searchInput.value.toLowerCase();
+  const fromDate = dateFrom.value;
+  const toDate = dateTo.value;
+  const showArchived = toggleArchived.checked;
+
+  ORDERS.forEach(o => {
+
+    const orderId = String(o[0]).toLowerCase();
+    const orderDateRaw = o[1];
+    const orderDate = new Date(orderDateRaw);
+    const formattedDate = orderDate.toLocaleDateString("en-IN");
+
+    const customer = String(o[2]).toLowerCase();
+    const phone = String(o[3]).toLowerCase();
+    const orderStatus = o[14];
+    const paymentRef = o[12] || "-";
+    const totalAmount = o[10] || 0;
+
+    const isArchived =
+      orderStatus.startsWith("Cancelled Order") ||
+      orderStatus === "Completed Order";
+
+    if (!showArchived && isArchived) return;
+
+    if (status) {
+      if (status === "Cancelled Order") {
+        if (!orderStatus.startsWith("Cancelled Order")) return;
+      }
+      else if (orderStatus !== status) return;
+    }
+
+    if (
+      search &&
+      !orderId.includes(search) &&
+      !customer.includes(search) &&
+      !phone.includes(search)
+    ) return;
+
+    if (fromDate && orderDate < new Date(fromDate)) return;
+
+    if (toDate) {
+      const to = new Date(toDate);
+      to.setHours(23,59,59,999);
+      if (orderDate > to) return;
+    }
+
+    rows.push([
+      o[0],
+      formattedDate,
+      o[2],
+      o[3],
+      totalAmount,
+      paymentRef,
+      orderStatus
+    ]);
+  });
+
+  const csvContent = rows.map(e => e.join(",")).join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "filtered_orders.csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 
 
 function handleAction(orderId, action) {
