@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Order Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial; padding: 20px; }
+.card { border:1px solid #000; padding:20px; margin-top:20px; }
+canvas { max-width:100%; }
+</style>
+</head>
+<body>
+
+<h2>📊 Order Analytics</h2>
+
+<div class="card">
+  <canvas id="statusChart"></canvas>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
+
+fetch(SCRIPT_URL + "?action=getOrders")
+.then(r => r.json())
+.then(data => {
+
+  const counts = {};
+
+  data.forEach(o => {
+    const status = o[14];
+    counts[status] = (counts[status] || 0) + 1;
+  });
+
+  new Chart(document.getElementById("statusChart"), {
+    type: "bar",
+    data: {
+      labels: Object.keys(counts),
+      datasets: [{
+        label: "Orders",
+        data: Object.values(counts)
+      }]
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
