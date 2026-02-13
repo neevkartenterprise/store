@@ -128,6 +128,26 @@ button:disabled {
     <input type="date" id="dateFrom" onchange="renderOrders()">
     <input type="date" id="dateTo" onchange="renderOrders()">
 
+
+    <!-- 📊 DASHBOARD SUMMARY -->
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
+    
+      <div>
+        <strong>Active Orders:</strong>
+        <span id="activeCount" style="background:#EDC789;padding:4px 10px;border-radius:20px;">
+          0
+        </span>
+      </div>
+    
+      <div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="toggleArchived" onchange="renderOrders()">
+          Show Archived Orders
+        </label>
+      </div>
+  
+      <button onclick="downloadCSV()">⬇ Download CSV</button>
+      
   </div>
 
   <div class="card">
