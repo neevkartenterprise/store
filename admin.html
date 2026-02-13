@@ -103,7 +103,9 @@ button:disabled {
         Show Archived Orders
       </label>
     </div>
-  
+
+    <button onclick="downloadCSV()">⬇ Download CSV</button>
+    
   </div>
 
   <div class="card filter-bar">
@@ -126,7 +128,6 @@ button:disabled {
     <input type="date" id="dateFrom" onchange="renderOrders()">
     <input type="date" id="dateTo" onchange="renderOrders()">
 
-    <button onclick="downloadCSV()">⬇ Download CSV</button>
   </div>
 
   <div class="card">
