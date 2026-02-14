@@ -99,11 +99,11 @@ async function submitOrder() {
     
     let result;
     
-    /*try {
+    try {
       result = JSON.parse(text);
     } catch (e) {
       result = { success: true }; // fallback if script returns plain text
-    }*/
+    }
 
     if (result.success === true) {
 
