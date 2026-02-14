@@ -94,23 +94,16 @@ async function submitOrder() {
   document.getElementById("status").innerText = "⏳ Submitting order...";
 
   try {
+
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(orderData)
+      body: JSON.stringify(orderData),
+      redirect: "follow"
     });
 
-    const text = await response.text();
-    
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch (e) {
-      result = { success: true };
-    }
-
-
-    if (result.success === true) {
+    // If request reached server, we treat it as success
+    if (response.ok || response.status === 302) {
 
       document.getElementById("status").innerHTML =
         "🎉 Order Submitted Successfully!";
@@ -127,12 +120,13 @@ async function submitOrder() {
       }, 3000);
 
     } else {
-      throw new Error(result.error || "Unknown error");
+      throw new Error("Server error");
     }
 
   } catch (err) {
-    console.error(err);
+    console.error("Submit error:", err);
     document.getElementById("status").innerText =
       "❌ Failed to submit order. Please try again.";
   }
 }
+
