@@ -25,6 +25,11 @@ function showSummary() {
   const summaryDiv = document.getElementById("order-summary");
   summaryDiv.innerHTML = "";
 
+  if (cart.length === 0) {
+    summaryDiv.innerHTML = "<p>No items in cart.</p>";
+    return;
+  }
+
   cart.forEach(item => {
     const rate = Number(item.Price);
     const qty = item.qty;
@@ -43,6 +48,7 @@ function showSummary() {
     <div><b>Order Total: ₹${itemsTotal}</b></div>
   `;
 }
+
 
 showSummary();
 
@@ -95,15 +101,14 @@ async function submitOrder() {
     });
 
     const text = await response.text();
-    const result = JSON.parse(text);
     
     let result;
-    
     try {
       result = JSON.parse(text);
     } catch (e) {
-      result = { success: true }; // fallback if script returns plain text
+      result = { success: true };
     }
+
 
     if (result.success === true) {
 
