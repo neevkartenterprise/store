@@ -1,6 +1,6 @@
 const NK_STORE = {
 
-  API_URL: "YOUR_API_URL",
+  API_URL: "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec",
 
   products: [],
   cart: JSON.parse(localStorage.getItem("cart")) || [],
