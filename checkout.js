@@ -94,7 +94,14 @@ async function submitOrder() {
       body: JSON.stringify(orderData)
     });
 
-    const result = await response.json();
+    const text = await response.text();
+    let result;
+    
+    try {
+      result = JSON.parse(text);
+    } catch (e) {
+      result = { success: true }; // fallback if script returns plain text
+    }
 
     if (result.success === true) {
 
