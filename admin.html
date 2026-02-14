@@ -127,7 +127,7 @@ button:disabled {
     <input
       type="text"
       id="searchInput"
-      placeholder="🔍 Search Order ID / Customer / Phone"
+      placeholder="🔍 Search Order ID / Customer / Phone / Email"
       oninput="renderOrders()"
     >
    
@@ -152,6 +152,7 @@ button:disabled {
           <th>Order Date</th>   <!-- ✅ Added -->
           <th>Customer</th>
           <th>Phone</th>
+          <th>Email</th>
           <th>Total</th>
           <th>Payment Reference</th>
           <th>Status</th>
@@ -208,6 +209,7 @@ function updateLastRefreshedTime() {
   const timeString = now.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
     hour12: true
   });
 
@@ -240,9 +242,10 @@ function renderOrders() {
 
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
-    const orderStatus = o[14];
-    const paymentRef = o[12] || "-";
-    const totalAmount = Number(o[10]) || 0;
+    const email = String(o[4]).toLowerCase();
+    const orderStatus = o[15];
+    const paymentRef = o[13] || "-";
+    const totalAmount = Number(o[11]) || 0;
 
     const isArchived =
       orderStatus.startsWith("Cancelled Order") ||
@@ -271,6 +274,7 @@ function renderOrders() {
       !orderId.includes(search) &&
       !customer.includes(search) &&
       !phone.includes(search)
+      !email.includes(search)
     ) return;
 
     // ✅ DATE FILTER
@@ -300,7 +304,7 @@ function renderOrders() {
         <td>${formattedDate}</td>
         <td>${o[2]}</td>
         <td>${o[3]}</td>
-        <td>₹${o[10]}</td>
+        <td>₹${o[11]}</td>
         <td>${paymentRef}</td>
         <td>${orderStatus}</td>
         <td>
@@ -335,6 +339,7 @@ function downloadCSV() {
     "Order Date",
     "Customer",
     "Phone",
+    "Email",
     "Total",
     "Payment Reference",
     "Status"
@@ -357,9 +362,10 @@ function downloadCSV() {
 
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
-    const orderStatus = o[14];
-    const paymentRef = o[12] || "-";
-    const totalAmount = o[10] || 0;
+    const email = String(o[4]).toLowerCase();
+    const orderStatus = o[15];
+    const paymentRef = o[13] || "-";
+    const totalAmount = o[11] || 0;
 
     const isArchived =
       orderStatus.startsWith("Cancelled Order") ||
@@ -378,7 +384,8 @@ function downloadCSV() {
       search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
-      !phone.includes(search)
+      !phone.includes(search) &&
+      !email.includes(search)
     ) return;
 
     if (fromDate && orderDate < new Date(fromDate)) return;
@@ -394,6 +401,7 @@ function downloadCSV() {
       formattedDate,
       o[2],
       o[3],
+      o[4],
       totalAmount,
       paymentRef,
       orderStatus
