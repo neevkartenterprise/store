@@ -182,16 +182,24 @@ const STATUS_FLOW = {
 let ORDERS = [];
 
 function login() {
-  if (adminPassword.value === ADMIN_PASSWORD) {
-    loginBox.style.display = "none";
-    ordersSection.style.display = "block";
+
+  const passwordInput = document.getElementById("adminPassword");
+  const loginBoxEl = document.getElementById("loginBox");
+  const ordersSectionEl = document.getElementById("ordersSection");
+
+  if (passwordInput.value === ADMIN_PASSWORD) {
+    loginBoxEl.style.display = "none";
+    ordersSectionEl.style.display = "block";
     loadOrders();
+
     // 🔄 Auto Refresh
     setInterval(loadOrders, 30000);
+
   } else {
     alert("Wrong password");
   }
 }
+
 
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
@@ -273,7 +281,7 @@ function renderOrders() {
       search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
-      !phone.includes(search)
+      !phone.includes(search) &&
       !email.includes(search)
     ) return;
 
