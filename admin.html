@@ -82,7 +82,7 @@ button:disabled {
 
 <div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
-  <button onclick="login()">Login</button>
+  <button onclick="NK_ADMIN.login()">Login</button>
 </div>
 
 <div id="ordersSection" style="display:none;">
@@ -167,8 +167,35 @@ button:disabled {
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
-const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
+const NK_ADMIN = {
+
+  API_URL: "YOUR_API_URL",
+
+  async login() {
+
+    const password = document.getElementById("adminPassword").value;
+
+    const res = await fetch(this.API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        action: "adminLogin",
+        password
+      })
+    });
+
+    const json = await res.json();
+
+    if (json.success) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("ordersSection").style.display = "block";
+      this.loadOrders();
+    } else {
+      alert("Invalid Password");
+    }
+  }
+};
+
 
 const STATUS_FLOW = {
   "Order Received": ["Confirm Payment", "confirmPayment"],
