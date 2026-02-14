@@ -95,13 +95,15 @@ async function submitOrder() {
     });
 
     const text = await response.text();
+    const result = JSON.parse(text);
+    
     let result;
     
-    try {
+    /*try {
       result = JSON.parse(text);
     } catch (e) {
       result = { success: true }; // fallback if script returns plain text
-    }
+    }*/
 
     if (result.success === true) {
 
