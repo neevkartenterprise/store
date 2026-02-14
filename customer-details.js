@@ -70,11 +70,12 @@ loadDeliveryCharges();
 function calculateDelivery() {
   const name = document.getElementById("cust-name").value.trim();
   const phone = document.getElementById("cust-phone").value.trim();
+  const email = document.getElementById("cust-email").value.trim();
   const addr1 = document.getElementById("addr1").value.trim();
   const addr2 = document.getElementById("addr2").value.trim();
   const area = document.getElementById("area").value;
 
-  if (!name || !phone || !addr1 || !addr2 || !area) {
+  if (!name || !phone || !email || !addr1 || !addr2 || !area) {
     alert("❌ Please fill all mandatory fields.");
     return;
   }
@@ -83,7 +84,10 @@ function calculateDelivery() {
     alert("❌ Please enter a valid 10-digit mobile number.");
     return;
   }
-
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("❌ Please enter a valid email address.");
+    return;
+  }
   const charge = deliveryMap[area.toLowerCase()];
 
   if (charge === undefined) {
@@ -101,6 +105,7 @@ function calculateDelivery() {
     JSON.stringify({
       name,
       phone,
+      email,
       addressLine1: addr1,
       addressLine2: addr2,
       area,
