@@ -96,11 +96,24 @@ function calculateDelivery() {
 
   localStorage.setItem("deliveryCharge", charge);
 
+  const email = document.getElementById("cust-email").value.trim();
+
+  if (!email) {
+    alert("❌ Please enter your email address.");
+    return;
+  }
+  
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    alert("❌ Please enter a valid email address.");
+    return;
+  }
+  
   localStorage.setItem(
     "customerDetails",
     JSON.stringify({
       name,
       phone,
+      email,
       addressLine1: addr1,
       addressLine2: addr2,
       area,
