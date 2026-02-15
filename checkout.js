@@ -109,11 +109,29 @@ async function submitOrder() {
       document.getElementById("submit-btn").disabled = true;
       document.getElementById("submit-btn").innerText = "Order Placed ✅";
 
+      const EMAIL_ENGINE_URL = "https://script.google.com/macros/s/AKfycbzcDpqkzmxujZBG3ambgi_wgwhf7FFhFwnpgBMvspvs3ISla2qeCzzXFWQfRSCG5yfMiQ/exec";
+
+      fetch(EMAIL_ENGINE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Email sent:", data);
+      })
+      .catch(err => {
+        console.error("Email error:", err);
+      });
+
       setTimeout(() => {
         window.location.href = "index.html";
       }, 3000);
 
-    } else {
+    }
+      else {
       throw new Error(result.error || "Unknown error");
     }
 
