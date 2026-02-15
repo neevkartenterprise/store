@@ -76,6 +76,7 @@ async function submitOrder() {
   }
 
   const orderData = {
+    action: "submitOrder",   // ✅ VERY IMPORTANT
     orderId,
     customer: customerDetails,
     cart,
