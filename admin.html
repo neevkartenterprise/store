@@ -78,7 +78,12 @@ button:disabled {
 
 <body>
 
-<h2>🛠 Admin – Order Management</h2>
+<h2 style="display:flex;justify-content:space-between;align-items:center;">
+  🛠 Admin – Order Management
+  <button onclick="logout()" style="background:#000;color:#EDC789;">
+    🔐 Log Out
+  </button>
+</h2>
 
 <div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
@@ -500,6 +505,20 @@ document.getElementById("logoutBtn").addEventListener("click", function () {
   });
 
 });
+  
+function logout() {
+  if (!confirm("Are you sure you want to log out?")) return;
+
+  // Clear session
+  sessionStorage.removeItem("adminLoggedIn");
+
+  // Optional: clear local storage if needed
+  // localStorage.clear();
+
+  // Redirect to login page
+  window.location.href = "login.html";
+}
+
 
 </script>
 
