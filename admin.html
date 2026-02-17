@@ -176,7 +176,7 @@ const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 
 // Prevent access if not logged in
 if (!sessionStorage.getItem("adminLoggedIn")) {
-  window.location.replace("login.html");
+  window.location.replace("/store/login.html");
 }
   
 const STATUS_FLOW = {
@@ -492,7 +492,7 @@ function logout() {
   // localStorage.clear();
 
   // Redirect to login page
-  window.location.href = "login.html";
+  window.location.href = "/store/login.html";
 }
 
 
