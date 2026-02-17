@@ -192,15 +192,23 @@ let ORDERS = [];
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
+
+    // ✅ Store login session
+    sessionStorage.setItem("adminLoggedIn", "true");
+
     loginBox.style.display = "none";
     ordersSection.style.display = "block";
+
     loadOrders();
+
     // 🔄 Auto Refresh
     setInterval(loadOrders, 30000);
+
   } else {
     alert("Wrong password");
   }
 }
+
 
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
@@ -473,38 +481,6 @@ function cancelOrder(orderId) {
     }
   });
 }
-
-document.getElementById("logoutBtn").addEventListener("click", function () {
-
-  if (!confirm("Are you sure you want to log out?")) return;
-
-  fetch(APP_SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "logout" })
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    if (data.success) {
-
-      // Clear browser storage
-      sessionStorage.clear();
-      localStorage.clear();
-
-      // Prevent back navigation
-      window.location.replace("login.html");
-
-    } else {
-      alert("Logout failed.");
-    }
-
-  })
-  .catch(err => {
-    alert("Network error during logout.");
-    console.error(err);
-  });
-
-});
   
 function logout() {
   if (!confirm("Are you sure you want to log out?")) return;
