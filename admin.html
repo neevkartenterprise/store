@@ -78,12 +78,7 @@ button:disabled {
 
 <body>
 
-<h2 style="display:flex;justify-content:space-between;align-items:center;">
-  🛠 Admin – Order Management
-  <button onclick="logout()" style="background:#000;color:#EDC789;">
-    🔐 Log Out
-  </button>
-</h2>
+<h2>🛠 Admin – Order Management</h2>
 
 <div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
@@ -174,11 +169,6 @@ button:disabled {
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 const ADMIN_PASSWORD = "Neev@Kart#Admin!2026$";
 
-// Prevent access if not logged in
-if (!sessionStorage.getItem("adminLoggedIn")) {
-  window.location.replace("/store/login.html");
-}
-  
 const STATUS_FLOW = {
   "Order Received": ["Confirm Payment", "confirmPayment"],
   "Payment Received": ["Pick & Pack", "pickPack"],
@@ -192,23 +182,15 @@ let ORDERS = [];
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
-
-    // ✅ Store login session
-    sessionStorage.setItem("adminLoggedIn", "true");
-
     loginBox.style.display = "none";
     ordersSection.style.display = "block";
-
     loadOrders();
-
     // 🔄 Auto Refresh
     setInterval(loadOrders, 30000);
-
   } else {
     alert("Wrong password");
   }
 }
-
 
 function loadOrders() {
   fetch(SCRIPT_URL + "?action=getOrders")
@@ -481,21 +463,6 @@ function cancelOrder(orderId) {
     }
   });
 }
-  
-function logout() {
-  if (!confirm("Are you sure you want to log out?")) return;
-
-  // Clear session
-  sessionStorage.removeItem("adminLoggedIn");
-
-  // Optional: clear local storage if needed
-  // localStorage.clear();
-
-  // Redirect to login page
-  window.location.href = window.location.origin + "/store/login.html";
-}
-
-
 </script>
 
 </body>
