@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8HMtlTF_0ACXVBYe1Mza6cBJAYmSPr5J0_edbCht_L8UpRI5TNVYT_pslT2KM6C4zMQ/exec";
 
 let sessionToken = localStorage.getItem("adminToken");
 
