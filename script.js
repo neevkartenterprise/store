@@ -25,7 +25,7 @@ function displayProducts(items) {
     list.innerHTML += `
       <div class="product">
         <img 
-          src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w500"
+          src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w1000"
           onerror="this.src='images/no-image.png'"
         >
         <h3>${p.Name}</h3>
