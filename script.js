@@ -26,7 +26,7 @@ function displayProducts(items) {
       <div class="product">
         <img 
           src="https://drive.google.com/thumbnail?id=${p.Image_ID}&sz=w500"
-          onerror="this.src='https://via.placeholder.com/200'"
+          onerror="this.src='images/no-image.png'"
         >
         <h3>${p.Name}</h3>
         <p>₹${p.Price}</p>
