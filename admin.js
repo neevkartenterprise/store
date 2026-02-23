@@ -1,3 +1,4 @@
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
 let sessionToken = localStorage.getItem("adminToken");
@@ -40,20 +41,12 @@ async function loadOrders() {
     return;
   }
 
-  fetch(SCRIPT_URL, {
+  const res = await fetch(SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify({
       action: "getOrders",
-      token: localStorage.getItem("adminToken")
+      token: sessionToken
     })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      console.log(data.data);
-    } else {
-      alert("Failed to load orders");
-    }
   });
 
   const data = await res.json();
