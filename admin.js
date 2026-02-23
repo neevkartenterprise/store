@@ -40,12 +40,20 @@ async function loadOrders() {
     return;
   }
 
-  const res = await fetch(SCRIPT_URL, {
+  fetch(SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify({
       action: "getOrders",
-      token: sessionToken
+      token: localStorage.getItem("adminToken")
     })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      console.log(data.data);
+    } else {
+      alert("Failed to load orders");
+    }
   });
 
   const data = await res.json();
