@@ -512,6 +512,81 @@ window.addEventListener("DOMContentLoaded", function () {
 
 });
 
+/************************************************
+ * AUTO LOGOUT AFTER 10 MINUTES (INACTIVE)
+ * Safe & Isolated Script
+ ************************************************/
+
+(function () {
+
+  const AUTO_LOGOUT_TIME = 10 * 60 * 1000; // 10 minutes
+  let logoutTimer = null;
+
+  function startAutoLogoutTimer() {
+    clearTimeout(logoutTimer);
+
+    logoutTimer = setTimeout(() => {
+      autoLogout();
+    }, AUTO_LOGOUT_TIME);
+  }
+
+  function resetAutoLogoutTimer() {
+    if (sessionStorage.getItem("adminLoggedIn") === "true") {
+      startAutoLogoutTimer();
+    }
+  }
+
+  function autoLogout() {
+
+    // Clear session
+    sessionStorage.removeItem("adminLoggedIn");
+
+    // Hide orders section
+    const ordersSection = document.getElementById("ordersSection");
+    const loginBox = document.getElementById("loginBox");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (ordersSection) ordersSection.style.display = "none";
+    if (loginBox) loginBox.style.display = "block";
+    if (logoutBtn) logoutBtn.style.display = "none";
+
+    alert("🔒 Session expired. You have been logged out due to inactivity.");
+
+  }
+
+  /************************************************
+   * START TIMER AFTER LOGIN
+   ************************************************/
+
+  const originalLogin = window.login;
+
+  window.login = function () {
+    originalLogin.apply(this, arguments);
+
+    if (sessionStorage.getItem("adminLoggedIn") === "true") {
+      startAutoLogoutTimer();
+    }
+  };
+
+  /************************************************
+   * AUTO LOGIN CASE (PAGE REFRESH)
+   ************************************************/
+
+  window.addEventListener("DOMContentLoaded", function () {
+    if (sessionStorage.getItem("adminLoggedIn") === "true") {
+      startAutoLogoutTimer();
+    }
+  });
+
+  /************************************************
+   * RESET TIMER ON USER ACTIVITY
+   ************************************************/
+
+  ["click", "mousemove", "keydown", "scroll"].forEach(event => {
+    document.addEventListener(event, resetAutoLogoutTimer);
+  });
+
+})();
 
 </script>
 
