@@ -109,7 +109,7 @@ async function submitOrder() {
       document.getElementById("submit-btn").disabled = true;
       document.getElementById("submit-btn").innerText = "Order Placed ✅";
 
-      const EMAIL_ENGINE_URL = "https://script.google.com/macros/s/AKfycbzcDpqkzmxujZBG3ambgi_wgwhf7FFhFwnpgBMvspvs3ISla2qeCzzXFWQfRSCG5yfMiQ/exec";
+      const EMAIL_ENGINE_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
       fetch(EMAIL_ENGINE_URL, {
         method: "POST",
