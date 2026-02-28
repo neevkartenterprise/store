@@ -78,7 +78,10 @@ button:disabled {
 
 <body>
 
-<h2>🛠 Admin – Order Management</h2>
+<h2 style="display:flex;justify-content:space-between;align-items:center;">
+  🛠 Admin – Order Management
+  <button id="logoutBtn" style="display:none;">🔐 Log Out</button>
+</h2>
 
 <div id="loginBox" class="card">
   <input type="password" id="adminPassword" placeholder="Admin Password">
@@ -182,11 +185,17 @@ let ORDERS = [];
 
 function login() {
   if (adminPassword.value === ADMIN_PASSWORD) {
+
+    // ✅ Save session
+    sessionStorage.setItem("adminLoggedIn", "true");
+
     loginBox.style.display = "none";
     ordersSection.style.display = "block";
+    // ✅ Show Logout button after login
+    document.getElementById("logoutBtn").style.display = "inline-block";
     loadOrders();
-    // 🔄 Auto Refresh
     setInterval(loadOrders, 30000);
+
   } else {
     alert("Wrong password");
   }
@@ -463,6 +472,47 @@ function cancelOrder(orderId) {
     }
   });
 }
+
+/************************************************
+ * LOGOUT
+ ************************************************/
+document.getElementById("logoutBtn").addEventListener("click", function () {
+
+  if (!confirm("Are you sure you want to log out?")) return;
+
+  // Clear session
+  sessionStorage.removeItem("adminLoggedIn");
+
+  // Hide orders
+  ordersSection.style.display = "none";
+  loginBox.style.display = "block";
+
+  // Hide logout button again
+  document.getElementById("logoutBtn").style.display = "none";
+
+  // Optional: Clear password field
+  adminPassword.value = "";
+
+});
+
+/************************************************
+ * AUTO LOGIN IF SESSION EXISTS
+ ************************************************/
+window.addEventListener("DOMContentLoaded", function () {
+
+  if (sessionStorage.getItem("adminLoggedIn") === "true") {
+
+    loginBox.style.display = "none";
+    ordersSection.style.display = "block";
+    document.getElementById("logoutBtn").style.display = "inline-block";
+
+    loadOrders();
+    setInterval(loadOrders, 30000);
+  }
+
+});
+
+
 </script>
 
 </body>
