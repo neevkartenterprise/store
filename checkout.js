@@ -92,10 +92,20 @@ async function submitOrder() {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "text/plain;charset=utf-8"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(orderData)
     });
+    
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.message || "Order failed");
+    }
     
     const text = await response.text();
     const result = JSON.parse(text);
