@@ -1,5 +1,5 @@
 /************************************************
- * UPI PAYMENT ENGINE
+ * UPI QR GENERATOR (LOCAL)
  ************************************************/
 
 function generateUPIQRCode(orderId, amount) {
@@ -14,11 +14,17 @@ function generateUPIQRCode(orderId, amount) {
     `&tn=${orderId}` +
     `&cu=INR`;
 
-  // 🔥 Use Google Chart API (more reliable)
-  const qrURL =
-    "https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=" +
-    encodeURIComponent(upiLink);
-
+  // Set Pay link
   document.getElementById("upi-pay-link").href = upiLink;
-  document.getElementById("qr-image").src = qrURL;
+
+  // Clear old QR if exists
+  const qrContainer = document.getElementById("qr-image");
+  qrContainer.innerHTML = "";
+
+  // Generate new QR
+  new QRCode(qrContainer, {
+    text: upiLink,
+    width: 220,
+    height: 220
+  });
 }
