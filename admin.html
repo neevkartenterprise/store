@@ -202,23 +202,33 @@ function login() {
 }
 
 function loadOrders() {
-  fetch(SCRIPT_URL + "?action=getOrders")
-    .then(r => r.json())
-    .then(response => {
 
-      if (!response.success) {
-        alert("Failed to load orders");
-        return;
-      }
-
-      ORDERS = response.data;   // ✅ FIXED
-      renderOrders();
-      updateLastRefreshedTime();
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      action: "getOrders",
+      token: "bypass"
     })
-    .catch(err => {
-      console.error("Load orders error:", err);
-      alert("Error fetching orders.");
-    });
+  })
+  .then(r => r.json())
+  .then(response => {
+
+    if (!response.success) {
+      alert("Failed to load orders");
+      return;
+    }
+
+    ORDERS = response.data || [];
+    renderOrders();
+    updateLastRefreshedTime();
+  })
+  .catch(err => {
+    console.error("Load orders error:", err);
+    alert("Error fetching orders.");
+  });
 }
 
 function updateLastRefreshedTime() {
