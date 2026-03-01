@@ -56,8 +56,6 @@ document.getElementById("upi-pay-link").href = upiLink;
 document.getElementById("qr-image").src =
   `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
 */
-// ================== GENERATE UPI ==================
-generateUPIQRCode(orderId, finalPayable);
 
 // ================== SUBMIT ORDER ==================
 async function submitOrder() {
@@ -128,3 +126,6 @@ async function submitOrder() {
       "❌ Failed to submit order. Please try again.";
   }
 }
+
+// ================== GENERATE UPI ==================
+generateUPIQRCode(orderId, finalPayable);
