@@ -91,24 +91,9 @@ async function submitOrder() {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      //headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(orderData)
     });
-    
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.message || "Order failed");
-    }
-    
-    const text = await response.text();
-    const result = JSON.parse(text);
 
     const result = await response.json();
 
@@ -126,6 +111,13 @@ async function submitOrder() {
 
       const EMAIL_ENGINE_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
 
+      fetch(EMAIL_ENGINE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+      })
       .then(res => res.json())
       .then(data => {
         console.log("Email sent:", data);
