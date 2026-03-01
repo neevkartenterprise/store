@@ -70,16 +70,17 @@ async function submitOrder() {
     return;
   }
 
-  const customerDetails = JSON.parse(localStorage.getItem("customerDetails"));
+  const customerDetails =
+    JSON.parse(localStorage.getItem("customerDetails"));
 
   if (!customerDetails) {
     document.getElementById("status").innerText =
-      "❌ Customer details missing. Please restart checkout.";
+      "❌ Customer details missing.";
     return;
   }
 
   const orderData = {
-    action: "submitOrder",   // ✅ VERY IMPORTANT
+    action: "submitOrder",
     orderId,
     customer: customerDetails,
     cart,
@@ -89,62 +90,37 @@ async function submitOrder() {
     utr: utrValue
   };
 
-  document.getElementById("status").innerText = "⏳ Submitting order...";
+  document.getElementById("status").innerText =
+    "⏳ Submitting order...";
 
   try {
+
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData)
     });
-    
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    
+
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.message || "Order failed");
     }
-    
-    const text = await response.text();
-    const result = JSON.parse(text);
 
-    const result = await response.json();
+    document.getElementById("status").innerHTML =
+      "🎉 Order Submitted Successfully!";
 
-    if (result.success === true) {
+    localStorage.removeItem("cart");
+    localStorage.removeItem("deliveryCharge");
+    localStorage.removeItem("customerDetails");
 
-      document.getElementById("status").innerHTML =
-        "🎉 Order Submitted Successfully!";
+    document.getElementById("submit-btn").disabled = true;
+    document.getElementById("submit-btn").innerText =
+      "Order Placed ✅";
 
-      localStorage.removeItem("cart");
-      localStorage.removeItem("deliveryCharge");
-      localStorage.removeItem("customerDetails");
-
-      document.getElementById("submit-btn").disabled = true;
-      document.getElementById("submit-btn").innerText = "Order Placed ✅";
-
-      const EMAIL_ENGINE_URL = "https://script.google.com/macros/s/AKfycbz8NulIj3LlhKVYub6iuH_mWyxaZORCnLS78gGBcyDDFjvNEOyhks1JugddaA-3wmu4/exec";
-
-      .then(res => res.json())
-      .then(data => {
-        console.log("Email sent:", data);
-      })
-      .catch(err => {
-        console.error("Email error:", err);
-      });
-
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 3000);
-
-    }
-      else {
-      throw new Error(result.error || "Unknown error");
-    }
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
 
   } catch (err) {
     console.error(err);
