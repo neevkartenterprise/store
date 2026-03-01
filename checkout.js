@@ -47,7 +47,7 @@ function showSummary() {
 showSummary();
 
 // ================== UPI PAYMENT ==================
-const upiID = "amitjadav-1@okaxis";
+/*const upiID = "amitjadav-1@okaxis";
 const upiName = "Neev Kart Enterprise";
 
 const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=${orderId}`;
@@ -55,6 +55,7 @@ const upiLink = `upi://pay?pa=${upiID}&pn=${upiName}&am=${finalPayable}&tn=${ord
 document.getElementById("upi-pay-link").href = upiLink;
 document.getElementById("qr-image").src =
   `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+*/
 
 // ================== SUBMIT ORDER ==================
 async function submitOrder() {
