@@ -1,9 +1,9 @@
 /************************************************
  * UPI QR GENERATOR (LOCAL)
  ************************************************/
-console.log("UPI JS Loaded");
+
 function generateUPIQRCode(orderId, amount) {
-console.log("UPI JS Loaded");
+
   const upiID = "amitjadav-1@okaxis";
   const upiName = "Neev Kart Enterprise";
 
