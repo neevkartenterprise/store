@@ -130,7 +130,7 @@ button:disabled {
     <input
       type="text"
       id="searchInput"
-      placeholder="🔍 Search Order ID / Customer / Phone"
+      placeholder="🔍 Search Order ID / Customer / Phone / Email"
       oninput="renderOrders()"
     >
    
@@ -301,7 +301,8 @@ function renderOrders() {
       search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
-      !phone.includes(search)
+      !phone.includes(search) &&
+      !email.includes(search)
     ) return;
 
     // ✅ DATE FILTER
