@@ -155,6 +155,7 @@ button:disabled {
           <th>Order Date</th>   <!-- ✅ Added -->
           <th>Customer</th>
           <th>Phone</th>
+          <th>Email</th>
           <th>Total</th>
           <th>Payment Reference</th>
           <th>Status</th>
@@ -330,6 +331,7 @@ function renderOrders() {
         <td>${formattedDate}</td>
         <td>${o[2]}</td>
         <td>${o[3]}</td>
+        <td>${o[4]}</td>
         <td>₹${o[13]}</td>
         <td>${paymentRef}</td>
         <td>${orderStatus}</td>
@@ -365,6 +367,7 @@ function downloadCSV() {
     "Order Date",
     "Customer",
     "Phone",
+    "Email",
     "Total",
     "Payment Reference",
     "Status"
@@ -424,6 +427,7 @@ function downloadCSV() {
       formattedDate,
       o[2],
       o[3],
+      o[4],
       totalAmount,
       paymentRef,
       orderStatus
