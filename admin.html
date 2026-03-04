@@ -271,6 +271,7 @@ function renderOrders() {
 
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
+    const email = String(o[4]).toLowerCase();
     const orderStatus = o[15];          // Status
     const paymentRef = o[14] || "-";    // UTR
     const totalAmount = Number(o[13]) || 0; // Final Total
@@ -301,7 +302,9 @@ function renderOrders() {
       search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
-      !phone.includes(search)
+      !phone.includes(search) &&
+      !email.includes(search)
+      
     ) return;
 
     // ✅ DATE FILTER
