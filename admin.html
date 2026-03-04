@@ -393,6 +393,7 @@ function downloadCSV() {
 
     const customer = String(o[2]).toLowerCase();
     const phone = String(o[3]).toLowerCase();
+    const email = String(o[4]).toLowerCase();
     const orderStatus = o[15];
     const paymentRef = o[14] || "-";
     const totalAmount = o[13] || 0;
@@ -414,7 +415,8 @@ function downloadCSV() {
       search &&
       !orderId.includes(search) &&
       !customer.includes(search) &&
-      !phone.includes(search)
+      !phone.includes(search) &&
+      !email.includes(search)
     ) return;
 
     if (fromDate && orderDate < new Date(fromDate)) return;
