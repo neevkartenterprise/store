@@ -133,3 +133,39 @@ function calculateDelivery() {
 function goCheckout() {
   window.location.href = "checkout.html";
 }
+
+/************************************************
+ * AUTO APPLY DELIVERY ON AREA SELECT
+ * (SAFE - DOES NOT MODIFY EXISTING FUNCTION)
+ ************************************************/
+
+(function () {
+
+  const areaDropdown = document.getElementById("area");
+
+  if (!areaDropdown) return;
+
+  areaDropdown.addEventListener("change", function () {
+
+    const area = this.value;
+
+    // Do nothing if no area selected
+    if (!area) return;
+
+    const charge = deliveryMap[area.toLowerCase()];
+
+    if (charge === undefined) return;
+
+    // ✅ Show delivery instantly
+    document.getElementById("delivery-info").innerHTML =
+      `🚚 Delivery Charges: <b>₹${charge}</b> will be added`;
+
+    // ✅ Save charge immediately
+    localStorage.setItem("deliveryCharge", charge);
+
+    // Show proceed button (optional UX improvement)
+    document.getElementById("proceed-btn").style.display = "inline-block";
+
+  });
+
+})();
