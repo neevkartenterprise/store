@@ -169,3 +169,92 @@ function goCheckout() {
   });
 
 })();
+
+/************************************************
+ * AUTO DELIVERY + AUTO SAVE + AUTO VALIDATION
+ * (FULLY REPLACES "NEXT" BUTTON FLOW)
+ ************************************************/
+
+(function () {
+
+  const fields = [
+    "cust-name",
+    "cust-phone",
+    "cust-email",
+    "addr1",
+    "addr2",
+    "area"
+  ];
+
+  const proceedBtn = document.getElementById("proceed-btn");
+
+  function validateAndSave() {
+
+    const name = document.getElementById("cust-name").value.trim();
+    const phone = document.getElementById("cust-phone").value.trim();
+    const email = document.getElementById("cust-email").value.trim();
+    const addr1 = document.getElementById("addr1").value.trim();
+    const addr2 = document.getElementById("addr2").value.trim();
+    const area = document.getElementById("area").value;
+
+    // Basic validation
+    if (!name || !phone || !email || !addr1 || !addr2 || !area) {
+      proceedBtn.disabled = true;
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      proceedBtn.disabled = true;
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      proceedBtn.disabled = true;
+      return;
+    }
+
+    const charge = deliveryMap[area.toLowerCase()];
+
+    if (charge === undefined) {
+      proceedBtn.disabled = true;
+      return;
+    }
+
+    // ✅ Show delivery instantly
+    document.getElementById("delivery-info").innerHTML =
+      `🚚 Delivery Charges: <b>₹${charge}</b> will be added`;
+
+    // ✅ Save delivery charge
+    localStorage.setItem("deliveryCharge", charge);
+
+    // ✅ Save customer details
+    localStorage.setItem(
+      "customerDetails",
+      JSON.stringify({
+        name,
+        phone,
+        email,
+        addressLine1: addr1,
+        addressLine2: addr2,
+        area,
+        city: "Vadodara",
+        state: "Gujarat",
+        country: "India",
+        fullAddress: `${addr1}, ${addr2}, ${area}, Vadodara, Gujarat, India`
+      })
+    );
+
+    // ✅ Enable Proceed button
+    proceedBtn.disabled = false;
+  }
+
+  // Attach listeners to all fields
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener("input", validateAndSave);
+    el.addEventListener("change", validateAndSave);
+  });
+
+})();
